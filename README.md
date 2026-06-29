@@ -1,31 +1,13 @@
-# Yarmkof GamePulse ⚽
+# Yarmkof GamePulse V4 Live
 
-Application web sportive spéciale Coupe du Monde.
+Application sportive connectée à l'API gratuite TheSportsDB.
 
 ## Fonctionnalités
+- Données récupérées via API gratuite key `123`
+- Prochains matchs par compétition
+- Recherche d'équipes avec logos
+- Calendrier
+- Mode clair/sombre
+- Interface responsive
 
-- Scores en direct fictifs
-- Temps de jeu
-- Buteurs
-- Cartons
-- Statistiques
-- Détails de match
-- Mode clair / sombre
-- Compatible GitHub Pages
-
-## Lancer en local
-
-```bash
-npm install
-npm run dev
-```
-
-## Compiler
-
-```bash
-npm run build
-```
-
-## Publication GitHub Pages
-
-Le dossier `dist` contient la version prête à publier.
+Déploiement : GitHub Pages depuis `main` / root.
