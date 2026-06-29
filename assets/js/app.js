@@ -1,114 +1,110 @@
-let DATA={teams:[],matches:[],scorers:[],cards:{yellow:[],red:[]}};
-const DATA_URL='assets/data/worldcup-live.json';
-const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
-let filter='all';
-
-async function loadData(showToast=true){
-  try{
-    setLoading(true);
-    const res=await fetch(`${DATA_URL}?t=${Date.now()}`,{cache:'no-store'});
-    if(!res.ok) throw new Error('Données indisponibles');
-    DATA=await res.json();
-    if(showToast) flash('Données actualisées');
-  }catch(e){
-    console.warn(e);
-    flash('Impossible de récupérer les données en ligne pour le moment');
-  }finally{
-    setLoading(false);
-    render();
+const stages = ['Groupes','32es','16es','8es','Quarts','Demi','Finale','Champion'];
+const currentStageIndex = 2;
+const teams = [
+  {name:'France', flag:'🇫🇷', status:'qualified', power:91}, {name:'Brésil', flag:'🇧🇷', status:'qualified', power:90},
+  {name:'Allemagne', flag:'🇩🇪', status:'qualified', power:86}, {name:'Paraguay', flag:'🇵🇾', status:'qualified', power:75},
+  {name:'Japon', flag:'🇯🇵', status:'eliminated', power:72}, {name:'Canada', flag:'🇨🇦', status:'qualified', power:77},
+  {name:'Afrique du Sud', flag:'🇿🇦', status:'eliminated', power:68}, {name:'Maroc', flag:'🇲🇦', status:'qualified', power:79},
+  {name:'Pays-Bas', flag:'🇳🇱', status:'qualified', power:85}, {name:'Suède', flag:'🇸🇪', status:'qualified', power:76},
+  {name:'Argentine', flag:'🇦🇷', status:'qualified', power:88}, {name:'Espagne', flag:'🇪🇸', status:'qualified', power:89}
+];
+let matches = [
+  {home:'Allemagne', away:'Paraguay', hf:'🇩🇪', af:'🇵🇾', hs:1, as:1, minute:73, status:'live', round:'16e de finale', goals:2, yellow:3, red:0},
+  {home:'Brésil', away:'Japon', hf:'🇧🇷', af:'🇯🇵', hs:2, as:1, minute:90, status:'finished', round:'16e de finale', goals:3, yellow:4, red:0},
+  {home:'France', away:'Suède', hf:'🇫🇷', af:'🇸🇪', hs:null, as:null, minute:null, status:'upcoming', round:'16e de finale', goals:0, yellow:0, red:0},
+  {home:'Pays-Bas', away:'Maroc', hf:'🇳🇱', af:'🇲🇦', hs:null, as:null, minute:null, status:'upcoming', round:'16e de finale', goals:0, yellow:0, red:0},
+  {home:'Canada', away:'Maroc', hf:'🇨🇦', af:'🇲🇦', hs:null, as:null, minute:null, status:'upcoming', round:'8e de finale', goals:0, yellow:0, red:0}
+];
+const scorers = [
+  ['Mbappé', 'France', 6], ['Vinicius Jr', 'Brésil', 5], ['Kane', 'Angleterre', 4], ['Musiala', 'Allemagne', 4], ['Messi', 'Argentine', 3], ['Gakpo', 'Pays-Bas', 3], ['Yamal', 'Espagne', 3], ['David', 'Canada', 2], ['Hakimi', 'Maroc', 2], ['Isak', 'Suède', 2]
+];
+const yellowCards = [['Rodri','Espagne',4],['Romero','Argentine',3],['Casemiro','Brésil',3],['Xhaka','Suisse',3],['Ugarte','Uruguay',2],['Konaté','France',2],['Davies','Canada',2],['Dumfries','Pays-Bas',2],['Kimmich','Allemagne',2],['Amrabat','Maroc',2]];
+const redCards = [['Romero','Argentine',1],['Otamendi','Argentine',1],['Koulibaly','Sénégal',1],['Richarlison','Brésil',1],['Hernández','Mexique',1]];
+const teamPower = Object.fromEntries(teams.map(t => [t.name, t.power]));
+function probability(m){
+  const hp = teamPower[m.home] || 75, ap = teamPower[m.away] || 75;
+  let home = hp / (hp + ap) * 100;
+  if(m.status === 'live'){
+    const diff = (m.hs||0) - (m.as||0);
+    home += diff * (12 + (m.minute||45)/10);
+    if(m.minute > 70 && diff > 0) home += 10;
+    if(m.minute > 70 && diff < 0) home -= 10;
   }
+  home = Math.max(5, Math.min(95, Math.round(home)));
+  return [home, 100-home];
 }
-function setLoading(v){const b=$('#globalRefreshBtn'); if(b){b.disabled=v; b.textContent=v?'Actualisation…':'↻ Actualiser';}}
-function flash(msg){const t=$('#toast'); if(!t)return; t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800)}
-function pctBar(a,b){return `<div class="bar"><span style="width:${a}%"></span></div><div class="aiText">🤖 IA : ${a}% - ${b}% · Confiance ${Math.max(50,Math.max(a,b)-5)}%</div>`}
-function render(){
- const shown=DATA.matches.filter(m=>filter==='all'||m.status===filter);
- $('#kpiMatches').textContent=DATA.matches.length; $('#kpiQualified').textContent=DATA.teams.filter(t=>t[1]==='qualified').length; $('#kpiEliminated').textContent=DATA.teams.filter(t=>t[1]==='eliminated').length; $('#kpiCards').textContent=(DATA.cards.yellow||[]).reduce((a,b)=>a+b[1],0)+(DATA.cards.red||[]).reduce((a,b)=>a+b[1],0);
- $('#matchGrid').innerHTML=shown.map(card).join('')||'<div class="panel">Aucun match pour ce filtre.</div>';
- $('#calendarList').innerHTML=DATA.matches.map(m=>`<div class="row"><b>${m.home} vs ${m.away}</b><span>${m.time} · ${m.place}</span></div>`).join('');
- $('#bracketList').innerHTML=DATA.matches.map(m=>`<article class="card"><b>${m.round}</b><p>${m.home} vs ${m.away}</p><span class="status ${m.status}">${label(m.status)}</span></article>`).join('');
- $('#aiList').innerHTML=DATA.matches.map(m=>`<article class="card"><h3>${m.home} vs ${m.away}</h3>${pctBar(m.ai[0],m.ai[1])}<p class="meta">Analyse : score, minute, dynamique, niveau estimé et événements du match.</p></article>`).join('');
- $('#teamList').innerHTML=DATA.teams.map(t=>`<span class="chip ${t[1]==='eliminated'?'out':t[1]==='pending'?'wait':''}">${t[0]} · ${fr(t[1])}</span>`).join('');
- $('#scorerList').innerHTML=DATA.scorers.map(s=>`<li>${s[0]} · ${s[2]} — <b>${s[1]}</b> buts</li>`).join('');
- $('#yellowCards').innerHTML=(DATA.cards.yellow||[]).map(c=>`<div>🟨 ${c[0]} — <b>${c[1]}</b></div>`).join(''); $('#redCards').innerHTML=(DATA.cards.red||[]).map(c=>`<div>🟥 ${c[0]} — <b>${c[1]}</b></div>`).join('');
- updateStatusList(); $('#lastUpdate').textContent=new Date().toLocaleString('fr-FR');
+function analysis(m){
+  const [h,a] = probability(m);
+  const fav = h >= a ? m.home : m.away;
+  const pct = Math.max(h,a);
+  if(m.status === 'live') return `IA : ${fav} est légèrement favori à ${pct} %. Le score actuel, la minute et la puissance estimée des équipes influencent la prédiction.`;
+  if(m.status === 'finished') return `Match terminé : l'analyse IA conserve ${fav} comme équipe la plus performante sur cette rencontre.`;
+  return `Avant-match : ${fav} possède ${pct} % de chances estimées selon le niveau global, la dynamique et la profondeur d'effectif.`;
 }
-function card(m){const score=m.status==='upcoming'?'<b>VS</b>':`<b>${m.hs} - ${m.as}</b>`;return `<article class="card"><span class="status ${m.status}">${label(m.status)}</span><h3>${m.round}</h3><div class="score"><span>${m.home}</span>${score}<span>${m.away}</span></div><div class="meta">⏱ ${m.minute?m.minute+'’':m.time} · 📍 ${m.place}</div><div class="events">${m.events.join('<br>')}</div>${pctBar(m.ai[0],m.ai[1])}</article>`}
-function label(s){return s==='live'?'● LIVE':s==='finished'?'TERMINÉ':'À VENIR'}function fr(s){return s==='qualified'?'qualifiée':s==='eliminated'?'éliminée':'en attente'}
-function updateStatusList(){const v=$('#teamStatusSelect').value;const list=DATA.teams.filter(t=>v==='all'||t[1]===v);$('#statusList').innerHTML=list.map(t=>`<span class="chip ${t[1]==='eliminated'?'out':t[1]==='pending'?'wait':''}">${t[0]} · ${fr(t[1])}</span>`).join('')}
-$$('.nav[data-view]').forEach(b=>b.onclick=()=>{$$('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.view').forEach(v=>v.classList.remove('active'));$('#'+b.dataset.view).classList.add('active')});
-$$('.filter').forEach(b=>b.onclick=()=>{$$('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});
-$('#teamStatusSelect').onchange=updateStatusList;$('#themeBtn').onclick=()=>document.body.classList.toggle('dark');
-$('#refreshBtn').onclick=()=>loadData(true); $('#globalRefreshBtn').onclick=()=>loadData(true);
-$('#searchBtn').onclick=()=>{const q=$('#searchInput').value.toLowerCase();filter='all';render();if(q){$('#matchGrid').innerHTML=DATA.matches.filter(m=>(m.home+m.away).toLowerCase().includes(q)).map(card).join('')||'<div class="panel">Aucun résultat.</div>'}};
-setInterval(()=>loadData(false),30000);
-const homeBtn=document.querySelector('#homeBtn');
-if(homeBtn){homeBtn.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));const first=document.querySelector('.nav[data-view="matches"]');if(first)first.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelector('#matches')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});};}
-let deferredPrompt;const installBtn=document.querySelector('#installBtn');
-window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;if(installBtn)installBtn.hidden=false;});
-if(installBtn){installBtn.onclick=async()=>{if(!deferredPrompt){alert('Sur iPhone : Partager → Sur l’écran d’accueil. Sur Android : menu Chrome → Installer l’application.');return;} deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBtn.hidden=true;};}
-
-function teamStrength(name){
-  const n=name.toLowerCase();
-  const elite=['france','brazil','brésil','argentina','argentine','england','spain','espagne','germany','allemagne','portugal','netherlands','pays-bas'];
-  const strong=['belgium','belgique','croatia','croatie','morocco','maroc','canada','japan','japon','senegal','suède','sweden','norway','norvège','ivory coast','côte d’ivoire','cote d’ivoire'];
-  if(elite.some(x=>n.includes(x))) return 88;
-  if(strong.some(x=>n.includes(x))) return 74;
-  return 58;
+function renderStages(){
+  document.getElementById('currentStage').textContent = '16e de finale';
+  document.getElementById('progressPercent').textContent = `${Math.round((currentStageIndex+1)/stages.length*100)}%`;
+  document.getElementById('stageProgress').innerHTML = stages.map((s,i)=>`<div class="stage ${i<currentStageIndex?'done':''} ${i===currentStageIndex?'current':''}">${i<currentStageIndex?'✓ ':i===currentStageIndex?'● ':''}${s}</div>`).join('');
 }
-function getFavoriteMatch(){
-  return DATA.matches.slice().sort((a,b)=>Math.max(b.ai[0],b.ai[1])-Math.max(a.ai[0],a.ai[1]))[0];
+function matchCard(m){
+  const [h,a] = probability(m); const score = m.status === 'upcoming' ? 'VS' : `${m.hs} - ${m.as}`;
+  const label = m.status === 'live' ? `LIVE ${m.minute}'` : m.status === 'finished' ? 'TERMINÉ' : 'À VENIR';
+  return `<article class="match-card"><div class="match-top"><span class="pill">${m.round}</span><span class="status ${m.status}">${label}</span></div><div class="teams"><div class="team"><span class="flag">${m.hf}</span>${m.home}</div><div class="score">${score}</div><div class="team"><span>${m.away}</span><span class="flag">${m.af}</span></div></div><div class="ai-bar"><div class="ai-row"><span>IA ${m.home} ${h}%</span><span>${m.away} ${a}%</span></div><div class="bar"><span style="width:${h}%"></span></div></div><p class="analysis">${analysis(m)}</p></article>`;
 }
-function explainMatch(m){
-  if(!m) return 'Je ne trouve pas ce match dans les données chargées.';
-  const homeLead = m.ai[0] >= m.ai[1];
-  const fav = homeLead ? m.home : m.away;
-  const pct = homeLead ? m.ai[0] : m.ai[1];
-  const other = homeLead ? m.away : m.home;
-  const scoreTxt = m.status==='upcoming' ? 'match à venir' : `${m.hs}-${m.as} à ${m.minute || 'FT'}’`;
-  return `<b>${m.home} vs ${m.away}</b><br>Score/statut : ${scoreTxt}.<br>Mon estimation donne <b>${fav}</b> devant avec <b>${pct}%</b> contre ${other}.<div class="aiReason">Facteurs utilisés : score actuel, minute, dynamique des événements, niveau estimé des équipes et avantage psychologique.</div><span class="confidence">Confiance IA : ${Math.max(55, Math.max(m.ai[0],m.ai[1])-4)}%</span>`;
+function renderMatches(filter='all'){
+  let list = matches.filter(m => filter==='all' || (filter==='today' ? true : m.status===filter));
+  document.getElementById('matchesList').innerHTML = list.map(matchCard).join('');
+  document.getElementById('featuredMatches').innerHTML = matches.slice(0,3).map(matchCard).join('');
 }
-function assistantAnswer(q){
-  const text=(q||'').toLowerCase();
-  if(!text.trim()) return 'Pose-moi une question sur les matchs, les qualifiés, les buteurs, les cartons ou une équipe.';
-  if(text.includes('live') || text.includes('direct')){
-    const live=DATA.matches.filter(m=>m.status==='live');
-    return live.length ? 'Matchs en direct :<br>'+live.map(explainMatch).join('<hr>') : 'Aucun match live dans les données actuellement chargées.';
-  }
-  if(text.includes('buteur') || text.includes('top')){
-    return 'Top buteurs :<br>'+DATA.scorers.slice(0,10).map((s,i)=>`${i+1}. <b>${s[0]}</b> (${s[2]}) — ${s[1]} buts`).join('<br>');
-  }
-  if(text.includes('carton')){
-    return 'Cartons :<br><b>Jaunes</b><br>'+DATA.cards.yellow.map(c=>`🟨 ${c[0]} — ${c[1]}`).join('<br>')+'<br><br><b>Rouges</b><br>'+DATA.cards.red.map(c=>`🟥 ${c[0]} — ${c[1]}`).join('<br>');
-  }
-  if(text.includes('qualifi')){
-    const ql=DATA.teams.filter(t=>t[1]==='qualified').map(t=>t[0]);
-    return 'Équipes qualifiées :<br>'+ql.map(x=>'✅ '+x).join('<br>');
-  }
-  if(text.includes('élim') || text.includes('elim')){
-    const el=DATA.teams.filter(t=>t[1]==='eliminated').map(t=>t[0]);
-    return 'Équipes éliminées :<br>'+el.map(x=>'❌ '+x).join('<br>');
-  }
-  if(text.includes('coupe du monde') || text.includes('gagner') || text.includes('favori')){
-    const teams=DATA.teams.filter(t=>t[1]!=='eliminated').map(t=>t[0]).sort((a,b)=>teamStrength(b)-teamStrength(a)).slice(0,5);
-    return 'Favoris IA actuels pour aller loin :<br>'+teams.map((t,i)=>`${i+1}. <b>${t}</b> — indice ${teamStrength(t)}%`).join('<br>')+'<div class="aiReason">Estimation indicative : elle doit être recalculée avec les vraies statistiques, blessures, forme récente et scores live.</div>';
-  }
-  const match=DATA.matches.find(m=>text.includes(m.home.toLowerCase()) || text.includes(m.away.toLowerCase()) || (text.includes('germany')&&m.home.toLowerCase().includes('germany')) || (text.includes('paraguay')&&m.away.toLowerCase().includes('paraguay')));
-  if(match) return explainMatch(match);
-  return 'Je peux t’aider sur : matchs live, qualifiés, éliminés, top buteurs, cartons, ou analyse d’un match. Exemple : “Analyse France Suède”.';
+function renderStats(){
+  const make = (arr) => arr.map(([p,t,n])=>`<li>${p} <small class="muted">${t}</small><span>${n}</span></li>`).join('');
+  document.getElementById('scorersList').innerHTML = make(scorers);
+  document.getElementById('yellowList').innerHTML = make(yellowCards);
+  document.getElementById('redList').innerHTML = make(redCards);
+  document.getElementById('todayMatches').textContent = matches.length;
+  document.getElementById('todayGoals').textContent = matches.reduce((s,m)=>s+(m.goals||0),0);
+  document.getElementById('yellowCards').textContent = matches.reduce((s,m)=>s+(m.yellow||0),0) + 18;
+  document.getElementById('redCards').textContent = matches.reduce((s,m)=>s+(m.red||0),0) + 2;
+  document.getElementById('aiFavorite').textContent = teams.sort((a,b)=>b.power-a.power)[0].name;
 }
-function addMsg(role,html){
-  const box=document.querySelector('#chatMessages'); if(!box) return;
-  const div=document.createElement('div'); div.className=`msg ${role}`; div.innerHTML=html; box.appendChild(div); box.scrollTop=box.scrollHeight;
+function renderTeams(status='qualified'){
+  const list = teams.filter(t => status==='all' || t.status===status);
+  document.getElementById('teamsGrid').innerHTML = list.map(t=>`<div class="team-card"><span><span class="flag">${t.flag}</span> <strong>${t.name}</strong></span><span class="pill">${t.status==='qualified'?'Qualifiée':'Éliminée'}</span></div>`).join('');
 }
-function initAssistant(){
-  const form=document.querySelector('#assistantForm');
-  if(!form) return;
-  if(!document.querySelector('#chatMessages .msg')) addMsg('bot','Bonjour 👋 Je suis l’assistant GamePulse IA. Demande-moi une analyse de match, les qualifiés, les buteurs ou les cartons.');
-  form.onsubmit=(e)=>{e.preventDefault(); const input=document.querySelector('#assistantInput'); const q=input.value.trim(); if(!q) return; addMsg('user',q); input.value=''; setTimeout(()=>addMsg('bot',assistantAnswer(q)),250);};
-  document.querySelectorAll('.quickQuestions button').forEach(b=>b.onclick=()=>{const q=b.dataset.q; addMsg('user',q); setTimeout(()=>addMsg('bot',assistantAnswer(q)),250);});
-  const clear=document.querySelector('#clearChatBtn'); if(clear) clear.onclick=()=>{document.querySelector('#chatMessages').innerHTML=''; addMsg('bot','Discussion effacée. Quelle analyse souhaites-tu ?');};
+function renderBracket(){
+  const rounds = { '16es':['Allemagne 1-1 Paraguay','Brésil 2-1 Japon','France - Suède','Pays-Bas - Maroc'], '8es':['Canada - TBD','Brésil - TBD'], 'Quarts':['TBD - TBD','TBD - TBD'], 'Demi':['TBD - TBD'], 'Finale':['TBD - TBD'] };
+  document.getElementById('bracketGrid').innerHTML = Object.entries(rounds).map(([r,ms])=>`<div class="round"><h4>${r}</h4>${ms.map(x=>`<div class="bracket-match">${x}</div>`).join('')}</div>`).join('');
 }
-
-initAssistant();
-loadData(false);
+function navigate(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
+  document.getElementById(view).classList.add('active-view');
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  const titles = {home:'GamePulse V8 Ultimate',matches:'Matchs Coupe du Monde',bracket:'Tableau final',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
+  document.getElementById('pageTitle').textContent = titles[view] || 'GamePulse';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function botAnswer(q){
+  q = q.toLowerCase();
+  if(q.includes('favori') || q.includes('gagner')) return `Le favori IA actuel est ${teams.sort((a,b)=>b.power-a.power)[0].name}. L'estimation tient compte du niveau d'équipe, de la forme simulée, des résultats et de la progression du tableau.`;
+  if(q.includes('buteur')) return `Le meilleur buteur actuel est ${scorers[0][0]} avec ${scorers[0][2]} buts. Le top 10 est disponible dans l'onglet Statistiques.`;
+  if(q.includes('serré')) return `Le match le plus serré est Allemagne - Paraguay : 1-1 en live. L'IA estime une probabilité proche de l'équilibre.`;
+  if(q.includes('progression') || q.includes('étape')) return `La compétition est actuellement en 16e de finale. Les groupes et les 32es sont terminés, les 8es puis les quarts suivront automatiquement.`;
+  return `Analyse IA : GamePulse compare score, minute, niveau des équipes, dynamique et statut du tournoi. Cette estimation reste indicative, pas une certitude.`;
+}
+function addMsg(txt,type='bot'){ const box=document.getElementById('chatBox'); box.insertAdjacentHTML('beforeend',`<div class="msg ${type}">${txt}</div>`); box.scrollTop=box.scrollHeight; }
+function updateTime(){ document.getElementById('lastUpdate').textContent = 'Mise à jour ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+function init(){
+  renderStages(); renderMatches(); renderStats(); renderTeams(); renderBracket(); updateTime(); addMsg('Bienvenue sur GamePulse IA. Je peux analyser les matchs, les qualifiés, les buteurs et la progression du tournoi.');
+  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
+  document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMatches(b.dataset.filter)}));
+  document.getElementById('teamStatusSelect').addEventListener('change',e=>renderTeams(e.target.value));
+  document.getElementById('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('light');document.getElementById('themeBtn').textContent=document.body.classList.contains('light')?'🌙 Mode sombre':'☀️ Mode clair'});
+  document.getElementById('refreshBtn').addEventListener('click',()=>{updateTime(); renderMatches(document.querySelector('.filter.active')?.dataset.filter||'all')});
+  document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>addMsg(botAnswer(b.dataset.question))));
+  document.getElementById('assistantForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('assistantInput'); if(!input.value.trim()) return; addMsg(input.value,'user'); setTimeout(()=>addMsg(botAnswer(input.value)),300); input.value='';});
+  setInterval(()=>{updateTime(); if(matches[0].status==='live' && matches[0].minute<90) matches[0].minute++; renderMatches(document.querySelector('.filter.active')?.dataset.filter||'all');},30000);
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  let deferredPrompt; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').classList.remove('hidden')});
+  document.getElementById('installBtn').addEventListener('click',async()=>{ if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;document.getElementById('installBtn').classList.add('hidden')} });
+}
+init();

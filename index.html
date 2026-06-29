@@ -1,105 +1,143 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Yarmkof GamePulse V7 Assistant IA</title>
-  <meta name="theme-color" content="#22d36d" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GamePulse" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#071018" />
+  <meta name="description" content="GamePulse V8 Ultimate - Coupe du Monde, scores, statistiques et assistant IA." />
+  <title>GamePulse V8 Ultimate</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <button class="brand homeBtn" id="homeBtn" type="button" aria-label="Retour à l’accueil"><img src="assets/icons/logo.svg" alt=""><div><strong>Yarmkof</strong><span>GamePulse AI</span><small>Accueil</small></div></button>
-      <button class="nav active" data-view="matches">⚽ Matchs CDM</button>
-      <button class="nav" data-view="calendar">📅 Calendrier</button>
-      <button class="nav" data-view="bracket">🏆 Tableau</button>
-      <button class="nav" data-view="ai">🤖 Analyse IA</button>
-      <button class="nav" data-view="assistant">💬 Assistant</button>
-      <button class="nav" data-view="teams">🌍 Équipes</button>
-      <button class="nav" data-view="stats">📊 Stats</button>
-      <button class="nav" data-view="alerts">🔔 Alertes</button>
-      <button id="themeBtn" class="nav">🌙 Mode sombre</button>
-      <p class="version">V7 · Assistant IA + Mobile First<br>Auto-refresh toutes les 30 s</p>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation principale">
+      <button class="brand home-btn" data-view="home" title="Accueil">
+        <img src="assets/icons/logo.svg" alt="GamePulse" />
+        <span><strong>GamePulse</strong><small>World Cup AI</small></span>
+      </button>
+      <nav>
+        <button class="nav-btn active" data-view="home">🏠 <span>Accueil</span></button>
+        <button class="nav-btn" data-view="matches">⚽ <span>Matchs</span></button>
+        <button class="nav-btn" data-view="bracket">🏆 <span>Tableau</span></button>
+        <button class="nav-btn" data-view="stats">📊 <span>Stats</span></button>
+        <button class="nav-btn" data-view="teams">🌍 <span>Équipes</span></button>
+        <button class="nav-btn" data-view="assistant">🤖 <span>Assistant IA</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="refreshBtn" class="ghost-btn">↻ Actualiser</button>
+        <button id="themeBtn" class="ghost-btn">☀️ Mode clair</button>
+      </div>
     </aside>
 
     <main class="main">
-      <header class="hero">
+      <header class="topbar">
         <div>
-          <span class="pill">🏆 Coupe du Monde · Dashboard IA</span>
-          <h1>Yarmkof <span>GamePulse</span></h1>
-          <p>Matchs, qualifiés, éliminés, buteurs, cartons et analyse prédictive.</p>
+          <p class="eyebrow">Coupe du Monde 2026</p>
+          <h1 id="pageTitle">GamePulse V8 Ultimate</h1>
         </div>
-        <div class="searchBox"><input id="searchInput" placeholder="Rechercher une équipe ou un joueur…"><button id="searchBtn">Rechercher</button><button id="globalRefreshBtn" class="refreshTop" type="button">↻ Actualiser</button></div>
+        <div class="top-actions">
+          <span id="lastUpdate" class="pill">Mise à jour —</span>
+          <button id="installBtn" class="primary-btn hidden">Installer l’app</button>
+        </div>
       </header>
 
-      <section class="kpis">
-        <article><strong id="kpiMatches">--</strong><span>Matchs chargés</span></article>
-        <article><strong id="kpiQualified">--</strong><span>Qualifiés</span></article>
-        <article><strong id="kpiEliminated">--</strong><span>Éliminés</span></article>
-        <article><strong id="kpiCards">--</strong><span>Cartons</span></article>
-      </section>
-
-      <section id="statusPanel" class="panel">
-        <div class="panelHead">
-          <h2>État de la compétition</h2>
-          <select id="teamStatusSelect">
-            <option value="qualified">Équipes qualifiées</option>
-            <option value="eliminated">Équipes éliminées</option>
-            <option value="all">Toutes les équipes</option>
-          </select>
+      <section id="home" class="view active-view">
+        <div class="hero-card">
+          <div>
+            <span class="live-dot"></span>
+            <p class="eyebrow">Étape de la compétition</p>
+            <h2 id="currentStage">16e de finale</h2>
+            <p class="muted">Progression automatique du tournoi, scores, IA et statistiques.</p>
+          </div>
+          <div class="hero-score">
+            <strong id="aiFavorite">France</strong>
+            <span>Favori IA actuel</span>
+          </div>
         </div>
-        <div id="statusList" class="chips"></div>
+
+        <div class="progress-card">
+          <div class="section-head">
+            <h3>Progression du tournoi</h3>
+            <span id="progressPercent" class="pill">42%</span>
+          </div>
+          <div id="stageProgress" class="stage-progress"></div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="metric-card"><span>Matchs aujourd’hui</span><strong id="todayMatches">0</strong></div>
+          <div class="metric-card"><span>Buts aujourd’hui</span><strong id="todayGoals">0</strong></div>
+          <div class="metric-card"><span>Cartons jaunes</span><strong id="yellowCards">0</strong></div>
+          <div class="metric-card"><span>Cartons rouges</span><strong id="redCards">0</strong></div>
+        </div>
+
+        <div class="section-head"><h3>Matchs à suivre</h3><button class="link-btn" data-view="matches">Voir tout</button></div>
+        <div id="featuredMatches" class="match-list"></div>
       </section>
 
-      <section id="matches" class="view active">
-        <div class="sectionHead"><h2>Matchs Coupe du Monde</h2><div class="filters"><button class="filter active" data-filter="all">Tous</button><button class="filter" data-filter="live">Live</button><button class="filter" data-filter="finished">Terminés</button><button class="filter" data-filter="upcoming">À venir</button></div></div>
-        <div id="matchGrid" class="grid"></div>
+      <section id="matches" class="view">
+        <div class="filters">
+          <button class="filter active" data-filter="all">Tous</button>
+          <button class="filter" data-filter="live">Live</button>
+          <button class="filter" data-filter="today">Aujourd’hui</button>
+          <button class="filter" data-filter="finished">Terminés</button>
+          <button class="filter" data-filter="upcoming">À venir</button>
+        </div>
+        <div id="matchesList" class="match-list"></div>
       </section>
 
-      <section id="calendar" class="view"><h2>Calendrier</h2><div id="calendarList" class="list"></div></section>
-      <section id="bracket" class="view"><h2>Tableau final</h2><div id="bracketList" class="grid compact"></div></section>
-      <section id="ai" class="view"><h2>Analyse IA des matchs</h2><div id="aiList" class="grid"></div></section>
-      <section id="teams" class="view"><h2>Équipes</h2><div id="teamList" class="chips big"></div></section>
+      <section id="bracket" class="view">
+        <div class="section-head"><h3>Tableau final</h3><span class="pill">Simulation V8</span></div>
+        <div id="bracketGrid" class="bracket-grid"></div>
+      </section>
 
       <section id="stats" class="view">
-        <div class="sectionHead"><h2>Statistiques tournoi</h2><button id="refreshBtn">Actualiser maintenant</button></div>
-        <div class="statsGrid">
-          <article class="panel"><h3>🏅 Top 10 buteurs</h3><ol id="scorerList" class="ranking"></ol></article>
-          <article class="panel"><h3>🟨 Cartons jaunes</h3><div id="yellowCards" class="ranking"></div></article>
-          <article class="panel"><h3>🟥 Cartons rouges</h3><div id="redCards" class="ranking"></div></article>
+        <div class="stats-layout">
+          <div class="panel"><h3>Top 10 buteurs</h3><ol id="scorersList" class="ranking"></ol></div>
+          <div class="panel"><h3>Cartons jaunes</h3><ol id="yellowList" class="ranking"></ol></div>
+          <div class="panel"><h3>Cartons rouges</h3><ol id="redList" class="ranking"></ol></div>
         </div>
+      </section>
+
+      <section id="teams" class="view">
+        <div class="section-head">
+          <h3>Équipes</h3>
+          <select id="teamStatusSelect" class="select">
+            <option value="qualified">Qualifiées</option>
+            <option value="eliminated">Éliminées</option>
+            <option value="all">Toutes</option>
+          </select>
+        </div>
+        <div id="teamsGrid" class="teams-grid"></div>
       </section>
 
       <section id="assistant" class="view">
-        <div class="sectionHead"><h2>Assistant GamePulse IA</h2><button id="clearChatBtn">Effacer</button></div>
-        <div class="assistantPanel">
-          <div id="chatMessages" class="chatMessages"></div>
-          <div class="quickQuestions">
-            <button data-q="Qui peut gagner la Coupe du Monde ?">Favori CDM</button>
-            <button data-q="Quels sont les matchs live ?">Matchs live</button>
-            <button data-q="Donne-moi le top buteurs">Top buteurs</button>
-            <button data-q="Quelles équipes sont qualifiées ?">Qualifiés</button>
-            <button data-q="Analyse Germany Paraguay">Analyse Allemagne-Paraguay</button>
+        <div class="assistant-card">
+          <div class="assistant-header"><span>🤖</span><div><h3>Assistant GamePulse IA</h3><p>Pose une question sur la Coupe du Monde.</p></div></div>
+          <div class="quick-questions">
+            <button data-question="Qui est favori pour gagner la Coupe du Monde ?">Favori Coupe du Monde</button>
+            <button data-question="Quels matchs sont les plus serrés ?">Matchs serrés</button>
+            <button data-question="Qui sont les meilleurs buteurs ?">Top buteurs</button>
+            <button data-question="Explique la progression du tournoi">Progression</button>
           </div>
-          <form id="assistantForm" class="chatForm">
-            <input id="assistantInput" placeholder="Pose une question : France, Brésil, score, qualifiés…" autocomplete="off" />
-            <button>Envoyer</button>
+          <div class="chat-box" id="chatBox"></div>
+          <form id="assistantForm" class="assistant-form">
+            <input id="assistantInput" placeholder="Ex : Qui va gagner France - Suède ?" autocomplete="off" />
+            <button class="primary-btn" type="submit">Envoyer</button>
           </form>
         </div>
       </section>
-      <section id="alerts" class="view"><h2>Alertes intelligentes</h2><div class="panel"><p>Les alertes seront prêtes pour : buts, cartons rouges, qualification, fin de match et changement de probabilité IA.</p></div></section>
-
-      <footer>Dernière mise à jour : <span id="lastUpdate">--</span> · Auto-refresh 30 s · PWA Android/iOS prête · Source actuelle : fichier JSON live local</footer><div id="toast" class="toast" aria-live="polite"></div>
-      <button id="installBtn" class="installBtn" hidden>Installer l’application</button>
     </main>
+
+    <nav class="bottom-nav" aria-label="Navigation mobile">
+      <button class="mobile-nav active" data-view="home">🏠<span>Accueil</span></button>
+      <button class="mobile-nav" data-view="matches">⚽<span>Matchs</span></button>
+      <button class="mobile-nav" data-view="stats">📊<span>Stats</span></button>
+      <button class="mobile-nav" data-view="assistant">🤖<span>IA</span></button>
+    </nav>
   </div>
-<script src="assets/js/app.js"></script>
-<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));}</script>
+
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
