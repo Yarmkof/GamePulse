@@ -1,13 +1,15 @@
-# Yarmkof GamePulse V4 Live
+# Yarmkof GamePulse V5 World Cup AI
 
-Application sportive connectée à l'API gratuite TheSportsDB.
+Application web sportive Coupe du Monde avec calendrier, matchs, tableau, recherche et module IA de prédiction.
 
 ## Fonctionnalités
-- Données récupérées via API gratuite key `123`
-- Prochains matchs par compétition
-- Recherche d'équipes avec logos
-- Calendrier
-- Mode clair/sombre
-- Interface responsive
+- Matchs Coupe du Monde 2026
+- Statuts : live, terminé, à venir
+- Analyse IA du vainqueur probable
+- Recherche d'équipes
+- Tableau final simplifié
+- Mode clair / sombre
+- Responsive mobile
 
-Déploiement : GitHub Pages depuis `main` / root.
+## Note
+La prédiction IA est une simulation côté navigateur basée sur ratings, score et minute de jeu.

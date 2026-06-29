@@ -1,152 +1,41 @@
-const API_KEY = '123';
-const BASE = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
-const content = document.getElementById('content');
-const statusBox = document.getElementById('status');
-const navs = [...document.querySelectorAll('.nav[data-view]')];
-const themeBtn = document.getElementById('themeBtn');
-const searchBtn = document.getElementById('searchBtn');
-const searchInput = document.getElementById('teamSearch');
-
-let currentView = 'live';
-
-const leagues = [
-  { id: '4328', name: 'Premier League' },
-  { id: '4334', name: 'Ligue 1' },
-  { id: '4335', name: 'La Liga' },
-  { id: '4331', name: 'Bundesliga' },
-  { id: '4332', name: 'Serie A' },
-  { id: '4480', name: 'FIFA World Cup' }
+const ratings={Brazil:91,France:90,Argentina:89,England:88,Germany:87,Spain:87,Portugal:86,Netherlands:85,Belgium:83,Croatia:82,Canada:76,Japan:79,Paraguay:77,Morocco:81,Norway:78,Sweden:80,Mexico:80,Ecuador:79,Senegal:80,"United States":78,"Bosnia and Herzegovina":75,Austria:78,Switzerland:80,Algeria:77,Australia:76,Egypt:76,Ghana:76,"Cape Verde":73,Colombia:81,"Ivory Coast":77,"DR Congo":74};
+const matches=[
+{id:'m1',date:'2026-06-28T21:00:00+02:00',round:'32e de finale',status:'done',group:'R32',home:'South Africa',away:'Canada',homeFlag:'🇿🇦',awayFlag:'🇨🇦',hs:0,as:1,stadium:'MetLife Stadium',events:['⚽ Canada 74’']},
+{id:'m2',date:'2026-06-29T19:00:00+02:00',round:'32e de finale',status:'done',group:'R32',home:'Brazil',away:'Japan',homeFlag:'🇧🇷',awayFlag:'🇯🇵',hs:2,as:1,stadium:'Dallas',events:['⚽ Vinicius Jr 22’','⚽ Rodrygo 61’','⚽ Japan 79’']},
+{id:'m3',date:'2026-06-29T22:30:00+02:00',round:'32e de finale',status:'live',minute:58,group:'R32',home:'Germany',away:'Paraguay',homeFlag:'🇩🇪',awayFlag:'🇵🇾',hs:0,as:0,stadium:'Houston',events:['🟨 Paraguay 34’','🔄 Germany change 55’']},
+{id:'m4',date:'2026-06-30T03:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Netherlands',away:'Morocco',homeFlag:'🇳🇱',awayFlag:'🇲🇦',hs:null,as:null,stadium:'Miami',events:[]},
+{id:'m5',date:'2026-06-30T19:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Ivory Coast',away:'Norway',homeFlag:'🇨🇮',awayFlag:'🇳🇴',hs:null,as:null,stadium:'Atlanta',events:[]},
+{id:'m6',date:'2026-06-30T23:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'France',away:'Sweden',homeFlag:'🇫🇷',awayFlag:'🇸🇪',hs:null,as:null,stadium:'New York',events:[]},
+{id:'m7',date:'2026-07-01T03:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Mexico',away:'Ecuador',homeFlag:'🇲🇽',awayFlag:'🇪🇨',hs:null,as:null,stadium:'Los Angeles',events:[]},
+{id:'m8',date:'2026-07-01T18:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'England',away:'DR Congo',homeFlag:'🏴',awayFlag:'🇨🇩',hs:null,as:null,stadium:'Seattle',events:[]},
+{id:'m9',date:'2026-07-01T22:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Belgium',away:'Senegal',homeFlag:'🇧🇪',awayFlag:'🇸🇳',hs:null,as:null,stadium:'Vancouver',events:[]},
+{id:'m10',date:'2026-07-02T02:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'United States',away:'Bosnia and Herzegovina',homeFlag:'🇺🇸',awayFlag:'🇧🇦',hs:null,as:null,stadium:'Dallas',events:[]},
+{id:'m11',date:'2026-07-02T21:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Spain',away:'Austria',homeFlag:'🇪🇸',awayFlag:'🇦🇹',hs:null,as:null,stadium:'Boston',events:[]},
+{id:'m12',date:'2026-07-03T01:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Portugal',away:'Croatia',homeFlag:'🇵🇹',awayFlag:'🇭🇷',hs:null,as:null,stadium:'Philadelphia',events:[]},
+{id:'m13',date:'2026-07-03T05:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Switzerland',away:'Algeria',homeFlag:'🇨🇭',awayFlag:'🇩🇿',hs:null,as:null,stadium:'San Francisco',events:[]},
+{id:'m14',date:'2026-07-03T20:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Australia',away:'Egypt',homeFlag:'🇦🇺',awayFlag:'🇪🇬',hs:null,as:null,stadium:'Kansas City',events:[]},
+{id:'m15',date:'2026-07-04T00:00:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Argentina',away:'Cape Verde',homeFlag:'🇦🇷',awayFlag:'🇨🇻',hs:null,as:null,stadium:'New York',events:[]},
+{id:'m16',date:'2026-07-04T03:30:00+02:00',round:'32e de finale',status:'scheduled',group:'R32',home:'Colombia',away:'Ghana',homeFlag:'🇨🇴',awayFlag:'🇬🇭',hs:null,as:null,stadium:'Los Angeles',events:[]}
 ];
-
-document.body.classList.toggle('light', localStorage.getItem('theme') === 'light');
-themeBtn.textContent = document.body.classList.contains('light') ? '🌙 Mode sombre' : '☀️ Mode clair';
-
-themeBtn.addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
-  themeBtn.textContent = document.body.classList.contains('light') ? '🌙 Mode sombre' : '☀️ Mode clair';
-});
-
-navs.forEach(btn => btn.addEventListener('click', () => {
-  navs.forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentView = btn.dataset.view;
-  loadView(currentView);
-}));
-
-searchBtn.addEventListener('click', () => searchTeam());
-searchInput.addEventListener('keydown', e => { if(e.key === 'Enter') searchTeam(); });
-
-async function fetchJson(url){
-  const res = await fetch(url);
-  if(!res.ok) throw new Error('Erreur API');
-  return res.json();
-}
-
-function setStatus(text, ok = true){
-  statusBox.textContent = text;
-  statusBox.style.display = ok ? 'block' : 'block';
-}
-function clear(){ content.innerHTML = ''; }
-function card(html){ return `<article class="card">${html}</article>`; }
-function esc(v){ return (v || '').toString().replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
-
-function formatDate(d){ return d ? new Date(d).toLocaleDateString('fr-FR', {weekday:'short', day:'2-digit', month:'short'}) : 'Date inconnue'; }
-
-async function loadLiveLike(){
-  setStatus('Chargement des matchs depuis TheSportsDB...');
-  clear();
-  const urls = leagues.slice(0,5).map(l => fetchJson(`${BASE}/eventsnextleague.php?id=${l.id}`).then(data => ({league:l, events:data.events || []})).catch(() => ({league:l, events:[]})) );
-  const results = await Promise.all(urls);
-  const events = results.flatMap(r => r.events.slice(0,3).map(e => ({...e, leagueName:r.league.name})));
-  document.getElementById('statEvents').textContent = events.length;
-  document.getElementById('statLeagues').textContent = leagues.length;
-  if(!events.length){ content.innerHTML = `<div class="card empty">Aucun match récupéré pour le moment. Essaie le calendrier ou la recherche d'équipe.</div>`; setStatus('Données API chargées, mais aucun événement trouvé.'); return; }
-  content.innerHTML = events.map(e => card(`
-    <span class="badge">${esc(e.leagueName)}</span>
-    <h3>${esc(e.strEvent || 'Match')}</h3>
-    <div class="teams">
-      <div class="team">${e.strHomeTeamBadge ? `<img src="${e.strHomeTeamBadge}"/>` : ''}<strong>${esc(e.strHomeTeam)}</strong></div>
-      <div class="score">VS</div>
-      <div class="team">${e.strAwayTeamBadge ? `<img src="${e.strAwayTeamBadge}"/>` : ''}<strong>${esc(e.strAwayTeam)}</strong></div>
-    </div>
-    <p class="muted">📅 ${formatDate(e.dateEvent)} · ⏰ ${esc(e.strTimeLocal || e.strTime || '')}</p>
-    <p class="muted">🏟️ ${esc(e.strVenue || 'Stade à confirmer')}</p>
-  `)).join('');
-  setStatus('Matchs à venir chargés avec l’API gratuite TheSportsDB.');
-}
-
-async function loadCalendar(){
-  setStatus('Chargement du calendrier...');
-  clear();
-  const data = await fetchJson(`${BASE}/eventsnextleague.php?id=4328`).catch(() => ({events:[]}));
-  const events = data.events || [];
-  content.innerHTML = events.length ? events.map(e => card(`
-    <span class="badge">Calendrier</span>
-    <h3>${esc(e.strEvent)}</h3>
-    <p class="muted">📅 ${formatDate(e.dateEvent)} · ⏰ ${esc(e.strTimeLocal || e.strTime || '')}</p>
-    <p>${esc(e.strLeague)} · Saison ${esc(e.strSeason)}</p>
-  `)).join('') : `<div class="card empty">Calendrier indisponible actuellement.</div>`;
-  setStatus('Calendrier chargé. Par défaut : Premier League, modifiable ensuite.');
-}
-
-function loadCompetitions(){
-  setStatus('Compétitions disponibles dans GamePulse.');
-  clear();
-  content.innerHTML = leagues.map(l => card(`
-    <span class="badge">Compétition</span>
-    <h3>${esc(l.name)}</h3>
-    <p class="muted">ID API : ${l.id}</p>
-    <button class="primary" onclick="loadLeague('${l.id}','${esc(l.name)}')">Voir les prochains matchs</button>
-  `)).join('');
-}
-
-window.loadLeague = async (id, name) => {
-  setStatus(`Chargement : ${name}`); clear();
-  const data = await fetchJson(`${BASE}/eventsnextleague.php?id=${id}`).catch(()=>({events:[]}));
-  const events = data.events || [];
-  content.innerHTML = events.map(e => card(`<h3>${esc(e.strEvent)}</h3><p class="muted">${formatDate(e.dateEvent)} · ${esc(e.strTime || '')}</p>`)).join('') || `<div class="card empty">Aucun match trouvé.</div>`;
-};
-
-async function searchTeam(){
-  const q = searchInput.value.trim();
-  if(!q) return;
-  navs.forEach(b => b.classList.remove('active'));
-  currentView = 'teams';
-  setStatus(`Recherche de l'équipe : ${q}`);
-  clear();
-  const data = await fetchJson(`${BASE}/searchteams.php?t=${encodeURIComponent(q)}`).catch(()=>({teams:[]}));
-  const teams = data.teams || [];
-  content.innerHTML = teams.length ? teams.map(t => card(`
-    <div class="team">${t.strTeamBadge ? `<img src="${t.strTeamBadge}"/>` : ''}<h3>${esc(t.strTeam)}</h3></div>
-    <p><strong>${esc(t.strLeague || 'Compétition inconnue')}</strong></p>
-    <p class="muted">${esc(t.strCountry || '')} · ${esc(t.strStadium || '')}</p>
-    <p>${esc((t.strDescriptionFR || t.strDescriptionEN || '').slice(0,180))}${(t.strDescriptionFR || t.strDescriptionEN) ? '...' : ''}</p>
-  `)).join('') : `<div class="card empty">Aucune équipe trouvée pour “${esc(q)}”.</div>`;
-  setStatus(`${teams.length} résultat(s) trouvé(s).`);
-}
-
-function loadAlerts(){
-  setStatus('Alertes démo — la notification navigateur sera ajoutée dans une prochaine version.');
-  content.innerHTML = card(`
-    <span class="badge">Bientôt</span>
-    <h3>Alertes GamePulse</h3>
-    <p>Dans la prochaine version : favoris, alertes de buts, début de match et résultats.</p>
-    <button class="primary" onclick="alert('Démo : les alertes seront activées avec les favoris.')">Tester une alerte</button>
-  `);
-}
-
-async function loadView(view){
-  try{
-    if(view === 'live') return loadLiveLike();
-    if(view === 'calendar') return loadCalendar();
-    if(view === 'competitions') return loadCompetitions();
-    if(view === 'teams') { searchInput.focus(); clear(); setStatus('Tape une équipe dans la barre de recherche.'); return; }
-    if(view === 'alerts') return loadAlerts();
-  }catch(e){
-    setStatus('Erreur de chargement API. La limite gratuite est peut-être atteinte ou le navigateur bloque la requête.', false);
-    content.innerHTML = `<div class="card empty">Impossible de charger les données pour le moment.</div>`;
-  }
-}
-
-loadView('live');
+const groups={A:['Mexico','South Africa','South Korea','Czechia'],B:['Canada','Bosnia and Herzegovina','Qatar','Switzerland'],C:['Brazil','Morocco','Haiti','Scotland'],D:['United States','Paraguay','Australia','Turkey'],E:['Germany','Curacao','Ivory Coast','Ecuador'],F:['Netherlands','Japan','Sweden','Tunisia'],G:['Belgium','Egypt','Iran','New Zealand'],H:['Spain','Cape Verde','Saudi Arabia','Uruguay'],I:['France','Senegal','Iraq','Norway'],J:['Argentina','Algeria','Austria','Jordan'],K:['Portugal','DR Congo','Uzbekistan','Colombia'],L:['England','Croatia','Ghana','Panama']};
+const content=document.getElementById('content'),search=document.getElementById('search');let selected=matches.find(m=>m.status==='live')||matches[0];
+function fmtDate(s){return new Intl.DateTimeFormat('fr-FR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(s));}
+function statusBadge(m){return m.status==='live'?'<span class="badge live">● LIVE</span>':m.status==='done'?'<span class="badge done">TERMINÉ</span>':'<span class="badge soon">À VENIR</span>'}
+function score(m){return m.status==='scheduled'?'VS':`${m.hs} - ${m.as}`}
+function predict(m){let rh=ratings[m.home]||72,ra=ratings[m.away]||72;let base=50+(rh-ra)*1.4;if(m.status==='live'||m.status==='done'){let diff=(m.hs||0)-(m.as||0);let min=m.status==='done'?90:(m.minute||1);base+=diff*(18+min/5); if(diff===0) base+=(rh-ra)*.45;}if(m.status==='done') base=m.hs>m.as?99:m.hs<m.as?1:50;let home=Math.max(1,Math.min(99,Math.round(base)));return {home,away:100-home,reason:reason(m,home)};}
+function reason(m,p){if(m.status==='done')return `${m.home} a déjà validé son résultat. L'IA archive ce match comme terminé.`;if(m.status==='live')return p>55?`${m.home} prend l'avantage selon la force d'équipe, le score actuel et le temps restant.`:p<45?`${m.away} devient favori selon la dynamique simulée et la résistance défensive.`:`Match très équilibré : le prochain but peut totalement changer la projection.`;return p>60?`${m.home} est favori avant match grâce à son rating supérieur.`:p<40?`${m.away} est favori avant match malgré le statut extérieur.`:`Match annoncé serré, écart de niveau faible.`}
+function card(m){let p=predict(m);return `<article class="card" onclick="selectMatch('${m.id}')"><div class="top"><strong>${m.round}</strong>${statusBadge(m)}</div><div class="teams"><span>${m.homeFlag} ${m.home}</span><span class="score">${score(m)}</span><span>${m.awayFlag} ${m.away}</span></div><p class="meta">⏱️ ${m.status==='live'?m.minute+'’':fmtDate(m.date)} · 📍 ${m.stadium}</p><div class="events">${(m.events.length?m.events:['Aucun événement pour l’instant']).map(e=>`<span>${e}</span>`).join('')}</div><p class="meta">🤖 IA : ${m.home} ${p.home}% · ${m.away} ${p.away}%</p></article>`}
+window.selectMatch=id=>{selected=matches.find(m=>m.id===id);renderAI()}
+function updateStats(list=matches){document.getElementById('statLive').textContent=matches.filter(m=>m.status==='live').length;document.getElementById('statDone').textContent=matches.filter(m=>m.status==='done').length;document.getElementById('statNext').textContent=matches.filter(m=>m.status==='scheduled').length;document.getElementById('statAI').textContent=selected?`${selected.home} - ${selected.away}`:'--'}
+function renderLive(){updateStats();content.innerHTML=`<h2 class="section-title">Matchs Coupe du Monde</h2><div class="tabs"><button class="tab active" onclick="filterStatus('all')">Tous</button><button class="tab" onclick="filterStatus('live')">Live</button><button class="tab" onclick="filterStatus('done')">Terminés</button><button class="tab" onclick="filterStatus('scheduled')">À venir</button></div><div class="grid" id="matchGrid">${matches.map(card).join('')}</div>`}
+window.filterStatus=s=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');let l=s==='all'?matches:matches.filter(m=>m.status===s);document.getElementById('matchGrid').innerHTML=l.map(card).join('')||'<div class="empty">Aucun match dans cette catégorie.</div>'}
+function renderCalendar(){updateStats();let byDay={};matches.forEach(m=>{let d=new Date(m.date).toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long'});(byDay[d]??=[]).push(m)});content.innerHTML=`<h2 class="section-title">Calendrier CDM</h2>${Object.entries(byDay).map(([d,ms])=>`<section class="panel"><h3>${d}</h3><div class="grid">${ms.map(card).join('')}</div></section>`).join('')}`}
+function renderBracket(){updateStats();let winners=matches.filter(m=>m.status==='done').map(m=>m.hs>m.as?m.home:m.away);content.innerHTML=`<h2 class="section-title">Tableau final</h2><div class="panel"><h3>Qualifiés connus</h3><div class="team-list">${winners.map(w=>`<div class="team-pill">✅ ${w}</div>`).join('')||'Aucun qualifié'}</div></div><div class="panel"><h3>À suivre</h3><p class="meta">Les vainqueurs des 32es avancent vers les 16es. La V6 pourra afficher un vrai bracket interactif complet.</p></div>`}
+function renderAI(){updateStats();let p=predict(selected);content.innerHTML=`<h2 class="section-title">Analyse IA du match</h2><section class="panel ai-box"><div><h3>${selected.homeFlag} ${selected.home}</h3><div class="prob"><span style="width:${p.home}%"></span></div><p><strong>${p.home}%</strong> de chances estimées</p></div><div><h3>${selected.awayFlag} ${selected.away}</h3><div class="prob"><span style="width:${p.away}%"></span></div><p><strong>${p.away}%</strong> de chances estimées</p></div></section><section class="panel"><h3>Lecture IA</h3><p>${p.reason}</p><div class="timeline">${selected.events.map(e=>`<div>${e}</div>`).join('')||'<div>Aucun événement majeur détecté.</div>'}</div></section><section class="panel"><h3>Choisir un autre match</h3><div class="grid">${matches.map(card).join('')}</div></section>`}
+function renderTeams(){updateStats();content.innerHTML=`<h2 class="section-title">Équipes Coupe du Monde</h2>${Object.entries(groups).map(([g,ts])=>`<section class="panel"><h3>Groupe ${g}</h3><div class="team-list">${ts.map(t=>`<div class="team-pill">${t}</div>`).join('')}</div></section>`).join('')}`}
+function renderAlerts(){updateStats();content.innerHTML=`<h2 class="section-title">Alertes intelligentes</h2><section class="panel"><h3>Démo notifications</h3><p>Dans une future version PWA, GamePulse pourra envoyer : but, mi-temps, carton rouge, fin de match, changement de favori IA.</p><button class="primary" onclick="alert('🔔 Exemple : Allemagne devient favorite à 61% selon GamePulse AI')">Tester une alerte IA</button></section>`}
+function runSearch(){let q=search.value.trim().toLowerCase();let res=matches.filter(m=>m.home.toLowerCase().includes(q)||m.away.toLowerCase().includes(q));content.innerHTML=`<h2 class="section-title">Recherche : ${search.value}</h2><div class="grid">${res.map(card).join('')||'<div class="empty">Aucun résultat.</div>'}</div>`}
+document.getElementById('searchBtn').onclick=runSearch;search.addEventListener('keydown',e=>{if(e.key==='Enter')runSearch()});
+document.querySelectorAll('.nav[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));b.classList.add('active');({live:renderLive,calendar:renderCalendar,bracket:renderBracket,ai:renderAI,teams:renderTeams,alerts:renderAlerts}[b.dataset.view])()});
+document.getElementById('themeBtn').onclick=()=>{document.body.classList.toggle('light');document.getElementById('themeBtn').textContent=document.body.classList.contains('light')?'🌙 Mode sombre':'☀️ Mode clair'};
+renderLive();

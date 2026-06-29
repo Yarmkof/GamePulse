@@ -3,49 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yarmkof GamePulse</title>
-  <link rel="icon" href="assets/icons/logo.svg" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <title>Yarmkof GamePulse V5 World Cup AI</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="assets/icons/logo.svg" alt="GamePulse" />
-      <div><strong>Yarmkof</strong><span>GamePulse Live</span></div>
-    </div>
-    <button class="nav active" data-view="live">⚽ Matchs live</button>
-    <button class="nav" data-view="calendar">📅 Calendrier</button>
-    <button class="nav" data-view="competitions">🏆 Compétitions</button>
-    <button class="nav" data-view="teams">🔎 Recherche équipe</button>
-    <button class="nav" data-view="alerts">🔔 Alertes</button>
-    <button class="nav" id="themeBtn">🌙 Mode sombre</button>
-    <p class="version">V4 Live · TheSportsDB API gratuite</p>
-  </aside>
-
-  <main class="app">
-    <header class="hero">
-      <div>
-        <p class="pill">🏆 Données sportives gratuites · API key 123</p>
-        <h1>Yarmkof <span>GamePulse</span></h1>
-        <p>Scores, calendrier, compétitions et recherche d’équipes via TheSportsDB.</p>
+  <div class="app" id="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="./assets/icons/logo.svg" alt="GamePulse" />
+        <div><strong>Yarmkof</strong><span>GamePulse AI</span></div>
       </div>
-      <div class="searchbar">
-        <input id="teamSearch" placeholder="Rechercher une équipe : PSG, Arsenal..." />
-        <button id="searchBtn">Rechercher</button>
-      </div>
-    </header>
+      <nav>
+        <button class="nav active" data-view="live">⚽ Matchs CDM</button>
+        <button class="nav" data-view="calendar">📅 Calendrier</button>
+        <button class="nav" data-view="bracket">🏆 Tableau</button>
+        <button class="nav" data-view="ai">🤖 Analyse IA</button>
+        <button class="nav" data-view="teams">🌍 Équipes</button>
+        <button class="nav" data-view="alerts">🔔 Alertes</button>
+        <button class="nav theme" id="themeBtn">☀️ Mode clair</button>
+      </nav>
+      <div class="version">V5 · Coupe du Monde + IA prédictive<br/>Source démo : dataset CDM intégré</div>
+    </aside>
 
-    <section class="stats">
-      <div><strong id="statEvents">--</strong><span>Événements chargés</span></div>
-      <div><strong id="statLeagues">--</strong><span>Compétitions</span></div>
-      <div><strong>100%</strong><span>Gratuit</span></div>
-      <div><strong>API</strong><span>TheSportsDB</span></div>
-    </section>
+    <main>
+      <header class="hero">
+        <div>
+          <span class="pill">🏆 Coupe du Monde 2026 · Module IA</span>
+          <h1>Yarmkof <span>GamePulse</span></h1>
+          <p>Matchs, scores, calendrier, tableau final et estimation du vainqueur avec une IA de simulation.</p>
+        </div>
+        <div class="searchbox">
+          <input id="search" placeholder="Rechercher : France, Brésil, Allemagne..." />
+          <button id="searchBtn">Rechercher</button>
+        </div>
+      </header>
 
-    <section id="status" class="status">Chargement...</section>
-    <section id="content" class="content"></section>
-  </main>
+      <section class="stats">
+        <div><strong id="statLive">0</strong><span>Matchs live</span></div>
+        <div><strong id="statDone">0</strong><span>Terminés</span></div>
+        <div><strong id="statNext">0</strong><span>À venir</span></div>
+        <div><strong id="statAI">--</strong><span>Match IA sélectionné</span></div>
+      </section>
 
-  <script src="assets/js/app.js"></script>
+      <section id="content" class="content"></section>
+    </main>
+  </div>
+  <script src="./assets/js/app.js"></script>
 </body>
 </html>
