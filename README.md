@@ -1,10 +1,3 @@
-# Yarmkof GamePulse V6 Mobile PWA
+# Yarmkof GamePulse V7 Assistant IA
 
-Application Coupe du Monde avec statistiques, listes qualifiées/éliminées, top buteurs, cartons et analyse IA.
-
-## Nouveautés
-- Responsive Android/iOS
-- Installation comme application PWA
-- Bouton Home intégré au logo
-- Service worker pour cache hors-ligne basique
-- Manifest + icônes 192/512
+Version mobile/PWA avec assistant IA local, questions rapides, analyse de match, qualifiés, éliminés, top buteurs et cartons.

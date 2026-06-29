@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Yarmkof GamePulse V6 Mobile</title>
+  <title>Yarmkof GamePulse V7 Assistant IA</title>
   <meta name="theme-color" content="#22d36d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -20,11 +20,12 @@
       <button class="nav" data-view="calendar">📅 Calendrier</button>
       <button class="nav" data-view="bracket">🏆 Tableau</button>
       <button class="nav" data-view="ai">🤖 Analyse IA</button>
+      <button class="nav" data-view="assistant">💬 Assistant</button>
       <button class="nav" data-view="teams">🌍 Équipes</button>
       <button class="nav" data-view="stats">📊 Stats</button>
       <button class="nav" data-view="alerts">🔔 Alertes</button>
       <button id="themeBtn" class="nav">🌙 Mode sombre</button>
-      <p class="version">V6 · Stats CDM + IA prédictive<br>Auto-refresh toutes les 60 s</p>
+      <p class="version">V7 · Assistant IA + Mobile First<br>Auto-refresh toutes les 30 s</p>
     </aside>
 
     <main class="main">
@@ -34,7 +35,7 @@
           <h1>Yarmkof <span>GamePulse</span></h1>
           <p>Matchs, qualifiés, éliminés, buteurs, cartons et analyse prédictive.</p>
         </div>
-        <div class="searchBox"><input id="searchInput" placeholder="Rechercher une équipe ou un joueur…"><button id="searchBtn">Rechercher</button></div>
+        <div class="searchBox"><input id="searchInput" placeholder="Rechercher une équipe ou un joueur…"><button id="searchBtn">Rechercher</button><button id="globalRefreshBtn" class="refreshTop" type="button">↻ Actualiser</button></div>
       </header>
 
       <section class="kpis">
@@ -75,9 +76,26 @@
         </div>
       </section>
 
+      <section id="assistant" class="view">
+        <div class="sectionHead"><h2>Assistant GamePulse IA</h2><button id="clearChatBtn">Effacer</button></div>
+        <div class="assistantPanel">
+          <div id="chatMessages" class="chatMessages"></div>
+          <div class="quickQuestions">
+            <button data-q="Qui peut gagner la Coupe du Monde ?">Favori CDM</button>
+            <button data-q="Quels sont les matchs live ?">Matchs live</button>
+            <button data-q="Donne-moi le top buteurs">Top buteurs</button>
+            <button data-q="Quelles équipes sont qualifiées ?">Qualifiés</button>
+            <button data-q="Analyse Germany Paraguay">Analyse Allemagne-Paraguay</button>
+          </div>
+          <form id="assistantForm" class="chatForm">
+            <input id="assistantInput" placeholder="Pose une question : France, Brésil, score, qualifiés…" autocomplete="off" />
+            <button>Envoyer</button>
+          </form>
+        </div>
+      </section>
       <section id="alerts" class="view"><h2>Alertes intelligentes</h2><div class="panel"><p>Les alertes seront prêtes pour : buts, cartons rouges, qualification, fin de match et changement de probabilité IA.</p></div></section>
 
-      <footer>Dernière mise à jour : <span id="lastUpdate">--</span> · PWA Android/iOS prête · Source actuelle : dataset local + architecture API prête</footer>
+      <footer>Dernière mise à jour : <span id="lastUpdate">--</span> · Auto-refresh 30 s · PWA Android/iOS prête · Source actuelle : fichier JSON live local</footer><div id="toast" class="toast" aria-live="polite"></div>
       <button id="installBtn" class="installBtn" hidden>Installer l’application</button>
     </main>
   </div>

@@ -1,0 +1,337 @@
+{
+  "teams": [
+    [
+      "Canada",
+      "qualified"
+    ],
+    [
+      "Brazil",
+      "qualified"
+    ],
+    [
+      "Germany",
+      "pending"
+    ],
+    [
+      "Paraguay",
+      "pending"
+    ],
+    [
+      "South Africa",
+      "eliminated"
+    ],
+    [
+      "Japan",
+      "eliminated"
+    ],
+    [
+      "Netherlands",
+      "pending"
+    ],
+    [
+      "Morocco",
+      "pending"
+    ],
+    [
+      "Ivory Coast",
+      "pending"
+    ],
+    [
+      "Norway",
+      "pending"
+    ],
+    [
+      "France",
+      "pending"
+    ],
+    [
+      "Sweden",
+      "pending"
+    ],
+    [
+      "Mexico",
+      "pending"
+    ],
+    [
+      "Ecuador",
+      "pending"
+    ],
+    [
+      "England",
+      "pending"
+    ],
+    [
+      "DR Congo",
+      "pending"
+    ],
+    [
+      "Belgium",
+      "pending"
+    ],
+    [
+      "Senegal",
+      "pending"
+    ],
+    [
+      "Argentina",
+      "pending"
+    ],
+    [
+      "Cape Verde",
+      "pending"
+    ]
+  ],
+  "matches": [
+    {
+      "round": "32e de finale",
+      "home": "South Africa",
+      "away": "Canada",
+      "hs": 0,
+      "as": 1,
+      "status": "finished",
+      "time": "dim. 28 juin, 21:00",
+      "place": "MetLife Stadium",
+      "events": [
+        "⚽ Canada 74'"
+      ],
+      "ai": [
+        1,
+        99
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "Brazil",
+      "away": "Japan",
+      "hs": 2,
+      "as": 1,
+      "status": "finished",
+      "time": "lun. 29 juin, 19:00",
+      "place": "Dallas",
+      "events": [
+        "⚽ Vinicius Jr 22'",
+        "⚽ Rodrygo 61'",
+        "⚽ Japan 79'"
+      ],
+      "ai": [
+        99,
+        1
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "Germany",
+      "away": "Paraguay",
+      "hs": 1,
+      "as": 1,
+      "status": "live",
+      "minute": 72,
+      "time": "72'",
+      "place": "Houston",
+      "events": [
+        "🟨 Paraguay 34'",
+        "🔁 Germany change 55'",
+        "⚽ Germany 63'",
+        "⚽ Paraguay 70'"
+      ],
+      "ai": [
+        52,
+        48
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "Netherlands",
+      "away": "Morocco",
+      "status": "upcoming",
+      "time": "mar. 30 juin, 03:00",
+      "place": "Miami",
+      "events": [
+        "Aucun événement pour l’instant"
+      ],
+      "ai": [
+        56,
+        44
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "Ivory Coast",
+      "away": "Norway",
+      "status": "upcoming",
+      "time": "mar. 30 juin, 19:00",
+      "place": "Atlanta",
+      "events": [
+        "Aucun événement pour l’instant"
+      ],
+      "ai": [
+        49,
+        51
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "France",
+      "away": "Sweden",
+      "status": "upcoming",
+      "time": "mar. 30 juin, 23:00",
+      "place": "New York",
+      "events": [
+        "Aucun événement pour l’instant"
+      ],
+      "ai": [
+        64,
+        36
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "Mexico",
+      "away": "Ecuador",
+      "status": "upcoming",
+      "time": "mer. 1 juillet, 03:00",
+      "place": "Los Angeles",
+      "events": [
+        "Aucun événement pour l’instant"
+      ],
+      "ai": [
+        52,
+        48
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "England",
+      "away": "DR Congo",
+      "status": "upcoming",
+      "time": "mer. 1 juillet, 18:00",
+      "place": "Kansas City",
+      "events": [
+        "Aucun événement pour l’instant"
+      ],
+      "ai": [
+        72,
+        28
+      ]
+    },
+    {
+      "round": "32e de finale",
+      "home": "Belgium",
+      "away": "Senegal",
+      "status": "upcoming",
+      "time": "mer. 1 juillet, 22:00",
+      "place": "Toronto",
+      "events": [
+        "Aucun événement pour l’instant"
+      ],
+      "ai": [
+        58,
+        42
+      ]
+    }
+  ],
+  "scorers": [
+    [
+      "Rodrygo",
+      5,
+      "Brazil"
+    ],
+    [
+      "Vinicius Jr",
+      4,
+      "Brazil"
+    ],
+    [
+      "Mbappé",
+      4,
+      "France"
+    ],
+    [
+      "Kane",
+      3,
+      "England"
+    ],
+    [
+      "Lautaro Martínez",
+      3,
+      "Argentina"
+    ],
+    [
+      "Bellingham",
+      2,
+      "England"
+    ],
+    [
+      "Musiala",
+      2,
+      "Germany"
+    ],
+    [
+      "De Bruyne",
+      2,
+      "Belgium"
+    ],
+    [
+      "David",
+      2,
+      "Canada"
+    ],
+    [
+      "Hakimi",
+      1,
+      "Morocco"
+    ]
+  ],
+  "cards": {
+    "yellow": [
+      [
+        "Paraguay",
+        7
+      ],
+      [
+        "Germany",
+        5
+      ],
+      [
+        "Brazil",
+        4
+      ],
+      [
+        "Japan",
+        4
+      ],
+      [
+        "France",
+        3
+      ],
+      [
+        "Canada",
+        3
+      ]
+    ],
+    "red": [
+      [
+        "Uruguay",
+        1
+      ],
+      [
+        "South Africa",
+        1
+      ],
+      [
+        "Paraguay",
+        0
+      ],
+      [
+        "France",
+        0
+      ],
+      [
+        "Brazil",
+        0
+      ]
+    ]
+  },
+  "source": "Dataset local V6.1 - prêt à connecter à une API live",
+  "updatedAt": ""
+}
