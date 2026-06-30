@@ -1,6 +1,6 @@
 
-const APP_VERSION = 'V9.4.0';
-const LAST_DATA_UPDATE = '30/06/2026 10:35';
+const APP_VERSION = '1.0.10';
+const LAST_DATA_UPDATE = '30/06/2026 15:58';
 const stages = ['Groupes','32es','16es','8es','Quarts','Demi','Finale','Champion'];
 const currentStageIndex = 2;
 
@@ -220,20 +220,20 @@ function bracketMatch(m, roundIndex, matchIndex){
   const winA = m.winner === m.a;
   const winB = m.winner === m.b;
   const delay = (roundIndex * 120 + matchIndex * 35);
-  return `<button class="bracket-match animated" style="--delay:${delay}ms" data-bracket="${escapeHtml(m.a)} ${escapeHtml(m.as)} - ${escapeHtml(m.bs)} ${escapeHtml(m.b)}" data-winner="${escapeHtml(m.winner)}">
-    <span class="bm-team ${winA?'winner still-in':''} ${!winA?'stopped':''}"><em>${m.af}</em><strong>${escapeHtml(m.a)}</strong><b>${escapeHtml(m.as)}</b></span>
-    <span class="bm-team ${winB?'winner still-in':''} ${!winB?'stopped':''}"><em>${m.bf}</em><strong>${escapeHtml(m.b)}</strong><b>${escapeHtml(m.bs)}</b></span>
+  return `<button class="bracket-match animated dynamic-node" style="--delay:${delay}ms" data-round="${roundIndex}" data-index="${matchIndex}" data-bracket="${escapeHtml(m.a)} ${escapeHtml(m.as)} - ${escapeHtml(m.bs)} ${escapeHtml(m.b)}" data-winner="${escapeHtml(m.winner)}">
+    <span class="bm-team ${winA?'winner still-in':''} ${!winA?'stopped':''}" data-team="${escapeHtml(m.a)}"><em>${m.af}</em><strong>${escapeHtml(m.a)}</strong><b>${escapeHtml(m.as)}</b></span>
+    <span class="bm-team ${winB?'winner still-in':''} ${!winB?'stopped':''}" data-team="${escapeHtml(m.b)}"><em>${m.bf}</em><strong>${escapeHtml(m.b)}</strong><b>${escapeHtml(m.bs)}</b></span>
   </button>`;
 }
 function renderBracket(){
   const rounds = bracketRounds.map((round, i)=>`<section class="bracket-round ${round.id}" style="--round:${i}"><h4>${round.title}</h4><div class="round-stack">${round.matches.map((m, mi)=>bracketMatch(m,i,mi)).join('')}</div></section>`).join('');
-  const markup = `<div class="prediction-bracket">
+  const markup = `<div class="prediction-bracket dynamic-bracket">
     <div class="bracket-hero">
-      <p class="eyebrow">2026 FIFA World Cup</p>
-      <h3>Tableau interactif</h3>
-      <span class="pill">${bracketMeta.subtitle}</span><div class="bracket-legend"><span class="legend-item"><i class="legend-dot green"></i> encore en course</span><span class="legend-item"><i class="legend-dot red"></i> parcours arrêté</span></div>
+      <div><p class="eyebrow">2026 FIFA World Cup</p><h3>Tableau dynamique</h3></div>
+      <div class="bracket-actions"><span class="pill">Version officielle 1.0.10</span><button class="link-btn" id="centerBracketBtn" type="button">Recentrer</button></div>
     </div>
-    <div class="bracket-scroll">${rounds}</div>
+    <div class="bracket-legend"><span class="legend-item"><i class="legend-dot green"></i> encore en course</span><span class="legend-item"><i class="legend-dot red"></i> parcours arrêté</span><span class="legend-item"><i class="legend-dot blue"></i> raccord dynamique</span></div>
+    <div class="bracket-viewport" id="bracketViewport"><div class="bracket-scroll dynamic-scroll" id="bracketScroll"><svg class="bracket-lines" id="bracketLines" aria-hidden="true"></svg>${rounds}</div></div>
     <aside class="champion-card">
       <span class="trophy">🏆</span>
       <p>Champion</p>
@@ -242,13 +242,51 @@ function renderBracket(){
     </aside>
   </div>`;
   $('bracketGrid').innerHTML = markup;
-  if($('homeBracket')) $('homeBracket').innerHTML = markup;
+  $('centerBracketBtn')?.addEventListener('click', () => { const vp=$('bracketViewport'); if(vp){ vp.scrollTo({left:0, top:0, behavior:'smooth'}); } });
+  requestAnimationFrame(drawDynamicBracketPaths);
+  setTimeout(drawDynamicBracketPaths, 120);
+}
+function drawDynamicBracketPaths(){
+  const svg = $('bracketLines');
+  const scroll = $('bracketScroll');
+  if(!svg || !scroll || !scroll.offsetWidth || !scroll.offsetHeight) return;
+  const scrollRect = scroll.getBoundingClientRect();
+  const w = Math.max(scroll.scrollWidth, scroll.offsetWidth);
+  const h = Math.max(scroll.scrollHeight, scroll.offsetHeight);
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.innerHTML = '';
+  const nodes = [...scroll.querySelectorAll('.bracket-match.dynamic-node')];
+  const byKey = new Map(nodes.map(n => [`${n.dataset.round}-${n.dataset.index}`, n]));
+  function point(node, side='right'){
+    const r = node.getBoundingClientRect();
+    const x = (side === 'left' ? r.left : r.right) - scrollRect.left + scroll.scrollLeft;
+    const y = r.top + r.height/2 - scrollRect.top + scroll.scrollTop;
+    return {x,y};
+  }
+  function addPath(from, to, cls){
+    const gap = Math.max(22, Math.min(54, (to.x - from.x) / 2));
+    const d = `M ${from.x} ${from.y} C ${from.x + gap} ${from.y}, ${to.x - gap} ${to.y}, ${to.x} ${to.y}`;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', d);
+    path.setAttribute('class', `bracket-path ${cls}`);
+    svg.appendChild(path);
+  }
+  for(let r=0; r<bracketRounds.length-1; r++){
+    bracketRounds[r].matches.forEach((m, i) => {
+      const from = byKey.get(`${r}-${i}`);
+      const to = byKey.get(`${r+1}-${Math.floor(i/2)}`);
+      if(!from || !to) return;
+      addPath(point(from,'right'), point(to,'left'), 'path-live');
+    });
+  }
 }
 function navigate(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
   $(view).classList.add('active-view');
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
-  const titles = {home:'GamePulse V9.4 Premium',matches:'Matchs Coupe du Monde',results:'Résultats',bracket:'Tableau interactif',scorers:'Classement des buteurs',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
+  const titles = {home:'GamePulse 1.0.10 Premium',matches:'Matchs Coupe du Monde',results:'Résultats',bracket:'Tableau interactif',scorers:'Classement des buteurs',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
   $('pageTitle').textContent = titles[view] || 'GamePulse';
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -363,8 +401,9 @@ function initTileLayout(){
 
 function init(){
   renderStages(); renderMatches(); renderStats(); renderTeams('all'); renderBracket(); updateTime();
-  addMsg('Bienvenue sur GamePulse V9.4. Le dashboard fixe est rétabli, les buteurs sont dans leur menu, les résultats ont leur page et le tableau affiche les parcours en vert/rouge.');
+  addMsg('Bienvenue sur GamePulse 1.0.10. Le tableau utilise maintenant des connexions dynamiques : les équipes qualifiées sont en vert, les parcours arrêtés en rouge, et les lignes restent raccordées même en bas de tableau.');
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
+  window.addEventListener('resize', () => requestAnimationFrame(drawDynamicBracketPaths));
   document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMatches(b.dataset.filter)}));
   $('teamStatusSelect').value='all';
   $('teamStatusSelect').addEventListener('change',e=>renderTeams(e.target.value));
@@ -375,7 +414,7 @@ function init(){
   document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>addMsg(botAnswer(b.dataset.question))));
   $('assistantForm').addEventListener('submit',e=>{e.preventDefault();const input=$('assistantInput'); if(!input.value.trim()) return; addMsg(input.value,'user'); setTimeout(()=>addMsg(botAnswer(input.value)),250); input.value='';});
   setInterval(refreshData,30000);
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=94').catch(()=>{});
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=1010').catch(()=>{});
   let deferredPrompt; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').classList.remove('hidden')});
   $('installBtn').addEventListener('click',async()=>{ if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;$('installBtn').classList.add('hidden')} });
 }

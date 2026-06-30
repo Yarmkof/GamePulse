@@ -1,16 +1,17 @@
-# GamePulse V9.4 Premium
+# GamePulse 1.0.10 Premium
 
-Application sportive PWA mobile-first : Coupe du Monde, matchs, résultats, buteurs, équipes, assistant IA et tableau interactif.
+Application sportive PWA mobile-first : Coupe du Monde, matchs, résultats, buteurs, équipes, assistant IA et tableau dynamique.
 
-## Nouveautés V9.4
-- Suppression du déplacement/redimensionnement des tuiles.
-- Ajout d’un bouton **Résultats** dans la barre latérale gauche.
-- Ajout d’un bouton **Buteurs** dans la barre latérale gauche avec menu déroulant Top 5 / Top 10 / Top 20.
-- Retrait du tableau animé de l’accueil : il apparaît uniquement dans l’onglet **Tableau**.
-- Noms complets des pays conservés dans le tableau.
-- Liseré vert sur les équipes qualifiées / encore en course dans le tableau.
-- Liseré rouge sur les équipes arrêtées / éliminées dans le tableau.
-- Cache PWA forcé en V9.4.
+## Nouveautés officielles 1.0.10
+- Passage officiel en version **1.0.10**.
+- Tableau reconstruit avec des raccords dynamiques entre les tours.
+- Correction du problème des pays du bas non raccordés.
+- Liseré vert pour les équipes encore en course / qualifiées.
+- Liseré rouge pour les équipes dont le parcours est arrêté.
+- Tableau disponible uniquement dans le bouton **Tableau**.
+- Menu **Buteurs** séparé avec Top 5 / Top 10 / Top 20.
+- Bouton **Résultats** conservé dans la barre latérale.
+- Cache PWA forcé en `gamepulse-1-0-10-cache`.
 
 ## Publication
 Dézipper le contenu à la racine du dépôt GitHub, puis faire un commit et un push.
