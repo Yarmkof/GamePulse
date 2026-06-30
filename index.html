@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#071018" />
-  <meta name="description" content="GamePulse V9 Ultimate - Coupe du Monde, scores, tableau interactif, statistiques et assistant IA." />
-  <title>GamePulse V9 Ultimate</title>
+  <meta name="description" content="GamePulse V9.1 Premium - Coupe du Monde, scores, tableau interactif, statistiques et assistant IA." />
+  <title>GamePulse V9.1 Premium</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="assets/css/styles.css" />
@@ -35,7 +35,7 @@
       <header class="topbar">
         <div>
           <p class="eyebrow">Coupe du Monde 2026</p>
-          <h1 id="pageTitle">GamePulse V9 Ultimate</h1>
+          <h1 id="pageTitle">GamePulse V9.1 Premium</h1>
         </div>
         <div class="top-actions">
           <span id="lastUpdate" class="pill">Mise à jour —</span>
@@ -72,8 +72,20 @@
           <div class="metric-card"><span>Cartons rouges</span><strong id="redCards">0</strong></div>
         </div>
 
-        <div class="section-head"><h3>Matchs à suivre</h3><button class="link-btn" data-view="matches">Voir tout</button></div>
-        <div id="featuredMatches" class="match-list"></div>
+        <div class="home-dashboard">
+          <div class="home-left-stack">
+            <div class="section-head"><h3>Matchs à suivre</h3><button class="link-btn" data-view="matches">Voir tout</button></div>
+            <div id="featuredMatches" class="match-list compact-list"></div>
+            <div class="mini-panel">
+              <div class="section-head"><h3>Top buteurs</h3><button class="link-btn" data-view="stats">Classement</button></div>
+              <ol id="homeScorersList" class="ranking compact-ranking"></ol>
+            </div>
+          </div>
+          <div class="home-bracket-panel">
+            <div class="section-head bracket-headline"><h3>Tableau interactif animé</h3><button class="link-btn" data-view="bracket">Plein écran</button></div>
+            <div id="homeBracket" class="home-bracket"></div>
+          </div>
+        </div>
       </section>
 
       <section id="matches" class="view">

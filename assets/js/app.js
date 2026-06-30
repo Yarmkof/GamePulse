@@ -1,5 +1,5 @@
 
-const APP_VERSION = 'V9.0.0';
+const APP_VERSION = 'V9.1.0';
 const LAST_DATA_UPDATE = '30/06/2026 09:30';
 const stages = ['Groupes','32es','16es','8es','Quarts','Demi','Finale','Champion'];
 const currentStageIndex = 2;
@@ -128,6 +128,7 @@ function renderMatches(filter='all'){
 function renderStats(){
   const make = (arr) => arr.map(([p,t,n])=>`<li>${p} <small class="muted">${t}</small><span>${n}</span></li>`).join('');
   $('scorersList').innerHTML = make(scorers);
+  if($('homeScorersList')) $('homeScorersList').innerHTML = make(scorers.slice(0,5));
   $('yellowList').innerHTML = make(yellowCards);
   $('redList').innerHTML = make(redCards);
   $('todayMatches').textContent = matches.filter(m=>m.date===todayFr()).length;
@@ -140,30 +141,88 @@ function renderTeams(status='all'){
   const list = [...teams].filter(t => status==='all' || t.status===status).sort((a,b)=>a.group.localeCompare(b.group) || a.name.localeCompare(b.name));
   $('teamsGrid').innerHTML = list.map(t=>`<div class="team-card"><span><span class="flag">${t.flag}</span> <strong>${t.name}</strong><small>Groupe ${t.group}</small></span><span class="pill">${t.status==='qualified'?'Qualifiée':'Éliminée'}</span></div>`).join('');
 }
-const bracketRounds = {
-  '16es': [
-    ['Canada','1','Afrique du Sud','0','Canada'], ['Brésil','2','Japon','1','Brésil'], ['Allemagne','1 (3)','Paraguay','1 (4)','Paraguay'], ['Pays-Bas','1 (2)','Maroc','1 (3)','Maroc'],
-    ['Côte d’Ivoire','','Norvège','',''], ['France','','Suède','',''], ['Mexique','','Équateur','',''], ['Angleterre','','RD Congo','',''], ['Belgique','','Sénégal','',''], ['États-Unis','','Bosnie-Herzégovine','',''], ['Espagne','','Autriche','',''], ['Portugal','','Croatie','','']
-  ],
-  '8es': [['Canada','','Maroc','',''],['Paraguay','','Vainqueur France/Suède','',''],['Brésil','','Vainqueur Côte d’Ivoire/Norvège','',''],['Vainqueur Mexique/Équateur','','Vainqueur Angleterre/RD Congo','','']],
-  'Quarts': [['À définir','','À définir','',''],['À définir','','À définir','','']],
-  'Demi': [['À définir','','À définir','','']],
-  'Finale': [['À définir','','À définir','','']]
+
+const bracketRounds = [
+  {id:'r32', title:'Round of 32', matches:[
+    {a:'Canada', af:'🇨🇦', as:'2', b:'Nouvelle-Zélande', bf:'🇳🇿', bs:'0', winner:'Canada'},
+    {a:'Chili', af:'🇨🇱', as:'1', b:'Japon', bf:'🇯🇵', bs:'2', winner:'Japon'},
+    {a:'Colombie', af:'🇨🇴', as:'2', b:'Australie', bf:'🇦🇺', bs:'1', winner:'Colombie'},
+    {a:'Portugal', af:'🇵🇹', as:'3', b:'Ukraine', bf:'🇺🇦', bs:'1', winner:'Portugal'},
+    {a:'France', af:'🇫🇷', as:'3', b:'Maroc', bf:'🇲🇦', bs:'1', winner:'France'},
+    {a:'États-Unis', af:'🇺🇸', as:'2', b:'Suisse', bf:'🇨🇭', bs:'1', winner:'États-Unis'},
+    {a:'Angleterre', af:'🏴', as:'2', b:'Sénégal', bf:'🇸🇳', bs:'0', winner:'Angleterre'},
+    {a:'Mexique', af:'🇲🇽', as:'1', b:'Corée du Sud', bf:'🇰🇷', bs:'2', winner:'Corée du Sud'},
+    {a:'Brésil', af:'🇧🇷', as:'3', b:'Arabie Saoudite', bf:'🇸🇦', bs:'0', winner:'Brésil'},
+    {a:'Équateur', af:'🇪🇨', as:'1', b:'Pays-Bas', bf:'🇳🇱', bs:'2', winner:'Pays-Bas'},
+    {a:'Argentine', af:'🇦🇷', as:'2', b:'Pologne', bf:'🇵🇱', bs:'0', winner:'Argentine'},
+    {a:'Croatie', af:'🇭🇷', as:'2', b:'Danemark', bf:'🇩🇰', bs:'1', winner:'Croatie'},
+    {a:'Espagne', af:'🇪🇸', as:'2', b:'Qatar', bf:'🇶🇦', bs:'0', winner:'Espagne'},
+    {a:'Belgique', af:'🇧🇪', as:'1', b:'Allemagne', bf:'🇩🇪', bs:'2', winner:'Allemagne'},
+    {a:'Italie', af:'🇮🇹', as:'2', b:'Turquie', bf:'🇹🇷', bs:'0', winner:'Italie'},
+    {a:'Uruguay', af:'🇺🇾', as:'2', b:'Autriche', bf:'🇦🇹', bs:'1', winner:'Uruguay'}
+  ]},
+  {id:'r16', title:'Round of 16', matches:[
+    {a:'Canada', af:'🇨🇦', as:'1', b:'Japon', bf:'🇯🇵', bs:'0', winner:'Canada'},
+    {a:'Colombie', af:'🇨🇴', as:'1', b:'Portugal', bf:'🇵🇹', bs:'2', winner:'Portugal'},
+    {a:'France', af:'🇫🇷', as:'2', b:'États-Unis', bf:'🇺🇸', bs:'0', winner:'France'},
+    {a:'Angleterre', af:'🏴', as:'2', b:'Corée du Sud', bf:'🇰🇷', bs:'1', winner:'Angleterre'},
+    {a:'Brésil', af:'🇧🇷', as:'3', b:'Pays-Bas', bf:'🇳🇱', bs:'1', winner:'Brésil'},
+    {a:'Argentine', af:'🇦🇷', as:'2', b:'Croatie', bf:'🇭🇷', bs:'1', winner:'Argentine'},
+    {a:'Espagne', af:'🇪🇸', as:'1', b:'Allemagne', bf:'🇩🇪', bs:'0', winner:'Espagne'},
+    {a:'Italie', af:'🇮🇹', as:'2', b:'Uruguay', bf:'🇺🇾', bs:'0', winner:'Italie'}
+  ]},
+  {id:'qf', title:'Quarts', matches:[
+    {a:'Canada', af:'🇨🇦', as:'0', b:'Portugal', bf:'🇵🇹', bs:'1', winner:'Portugal'},
+    {a:'France', af:'🇫🇷', as:'2', b:'Angleterre', bf:'🏴', bs:'1', winner:'France'},
+    {a:'Brésil', af:'🇧🇷', as:'2', b:'Argentine', bf:'🇦🇷', bs:'3', winner:'Argentine'},
+    {a:'Espagne', af:'🇪🇸', as:'1', b:'Italie', bf:'🇮🇹', bs:'0', winner:'Espagne'}
+  ]},
+  {id:'sf', title:'Demi-finales', matches:[
+    {a:'Portugal', af:'🇵🇹', as:'0', b:'France', bf:'🇫🇷', bs:'2', winner:'France'},
+    {a:'Argentine', af:'🇦🇷', as:'1', b:'Espagne', bf:'🇪🇸', bs:'2', winner:'Espagne'}
+  ]},
+  {id:'final', title:'Finale', matches:[
+    {a:'France', af:'🇫🇷', as:'2', b:'Espagne', bf:'🇪🇸', bs:'1', winner:'France'}
+  ]}
+];
+const bracketMeta = {
+  champion:{team:'France', flag:'🇫🇷'},
+  third:{team:'Argentine', flag:'🇦🇷'},
+  subtitle:'Fan concept animé • cliquez sur un match pour voir le détail'
 };
-function bracketMatch(row){
-  const [a,as,b,bs,w] = row;
-  const clsA = w && w===a ? 'winner' : '';
-  const clsB = w && w===b ? 'winner' : '';
-  return `<button class="bracket-match interactive" data-bracket="${escapeHtml(a)} - ${escapeHtml(b)}"><span class="bm-team ${clsA}">${escapeHtml(a)} <b>${escapeHtml(as)}</b></span><span class="bm-team ${clsB}">${escapeHtml(b)} <b>${escapeHtml(bs)}</b></span></button>`;
+function bracketMatch(m, roundIndex, matchIndex){
+  const winA = m.winner === m.a;
+  const winB = m.winner === m.b;
+  const delay = (roundIndex * 120 + matchIndex * 35);
+  return `<button class="bracket-match animated" style="--delay:${delay}ms" data-bracket="${escapeHtml(m.a)} ${escapeHtml(m.as)} - ${escapeHtml(m.bs)} ${escapeHtml(m.b)}" data-winner="${escapeHtml(m.winner)}">
+    <span class="bm-team ${winA?'winner':''}"><em>${m.af}</em><strong>${escapeHtml(m.a)}</strong><b>${escapeHtml(m.as)}</b></span>
+    <span class="bm-team ${winB?'winner':''}"><em>${m.bf}</em><strong>${escapeHtml(m.b)}</strong><b>${escapeHtml(m.bs)}</b></span>
+  </button>`;
 }
 function renderBracket(){
-  $('bracketGrid').innerHTML = Object.entries(bracketRounds).map(([r,ms])=>`<div class="round"><h4>${r}</h4>${ms.map(bracketMatch).join('')}</div>`).join('');
+  const rounds = bracketRounds.map((round, i)=>`<section class="bracket-round ${round.id}" style="--round:${i}"><h4>${round.title}</h4><div class="round-stack">${round.matches.map((m, mi)=>bracketMatch(m,i,mi)).join('')}</div></section>`).join('');
+  const markup = `<div class="prediction-bracket">
+    <div class="bracket-hero">
+      <p class="eyebrow">2026 FIFA World Cup</p>
+      <h3>Prediction Bracket</h3>
+      <span class="pill">${bracketMeta.subtitle}</span>
+    </div>
+    <div class="bracket-scroll">${rounds}</div>
+    <aside class="champion-card">
+      <span class="trophy">🏆</span>
+      <p>Champion</p>
+      <strong>${bracketMeta.champion.flag} ${bracketMeta.champion.team}</strong>
+      <small>Troisième place : ${bracketMeta.third.flag} ${bracketMeta.third.team}</small>
+    </aside>
+  </div>`;
+  $('bracketGrid').innerHTML = markup;
+  if($('homeBracket')) $('homeBracket').innerHTML = markup;
 }
 function navigate(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
   $(view).classList.add('active-view');
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
-  const titles = {home:'GamePulse V9 Ultimate',matches:'Matchs Coupe du Monde',bracket:'Tableau interactif',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
+  const titles = {home:'GamePulse V9.1 Premium',matches:'Matchs Coupe du Monde',bracket:'Tableau interactif',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
   $('pageTitle').textContent = titles[view] || 'GamePulse';
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -195,7 +254,7 @@ function showMatchDetails(id){
 }
 function init(){
   renderStages(); renderMatches(); renderStats(); renderTeams('all'); renderBracket(); updateTime();
-  addMsg('Bienvenue sur GamePulse V9. Les bugs V8 connus ont été corrigés : actualisation, Allemagne-Paraguay, buteurs, équipes et tableau interactif.');
+  addMsg('Bienvenue sur GamePulse V9.1. Les bugs V8 connus ont été corrigés : actualisation, Allemagne-Paraguay, buteurs, équipes et tableau interactif.');
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
   document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMatches(b.dataset.filter)}));
   $('teamStatusSelect').value='all';
@@ -206,7 +265,7 @@ function init(){
   document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>addMsg(botAnswer(b.dataset.question))));
   $('assistantForm').addEventListener('submit',e=>{e.preventDefault();const input=$('assistantInput'); if(!input.value.trim()) return; addMsg(input.value,'user'); setTimeout(()=>addMsg(botAnswer(input.value)),250); input.value='';});
   setInterval(refreshData,30000);
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=9').catch(()=>{});
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=91').catch(()=>{});
   let deferredPrompt; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').classList.remove('hidden')});
   $('installBtn').addEventListener('click',async()=>{ if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;$('installBtn').classList.add('hidden')} });
 }

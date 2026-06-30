@@ -13,3 +13,15 @@ Version corrigée de GamePulse.
 
 ## Important
 Cette V9 reste utilisable sans clé API. Pour obtenir de vraies données live automatiques, il faudra ensuite brancher une API football côté serveur.
+
+
+## V9.1
+- Ajout du tableau Coupe du Monde interactif animé inspiré de la pièce jointe.
+- Cartes cliquables, animation d’apparition, champion, troisième place et vue mobile horizontale.
+
+
+## V9.1 Premium
+- Boutons Actualiser et Mode clair remontés sous la navigation.
+- Tableau interactif animé intégré sur la page d’accueil, dans la partie droite.
+- Aperçu compact des matchs et top buteurs à gauche.
+- Cache PWA mis à jour pour forcer la nouvelle version.
