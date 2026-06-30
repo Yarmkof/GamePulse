@@ -1,17 +1,21 @@
-# GamePulse 1.0.10 Premium
+# GamePulse 2.0
 
-Application sportive PWA mobile-first : Coupe du Monde, matchs, résultats, buteurs, équipes, assistant IA et tableau dynamique.
+Application PWA Coupe du Monde avec mise à jour internet toutes les 45 secondes.
 
-## Nouveautés officielles 1.0.10
-- Passage officiel en version **1.0.10**.
-- Tableau reconstruit avec des raccords dynamiques entre les tours.
-- Correction du problème des pays du bas non raccordés.
-- Liseré vert pour les équipes encore en course / qualifiées.
-- Liseré rouge pour les équipes dont le parcours est arrêté.
-- Tableau disponible uniquement dans le bouton **Tableau**.
-- Menu **Buteurs** séparé avec Top 5 / Top 10 / Top 20.
-- Bouton **Résultats** conservé dans la barre latérale.
-- Cache PWA forcé en `gamepulse-1-0-10-cache`.
+## Nouveautés 2.0
+- Connexion à une API football gratuite sans clé : `https://worldcup26.ir/get/games`, `/get/teams`.
+- Rafraîchissement automatique toutes les 45 secondes.
+- Bouton Actualiser connecté à une vraie tentative de récupération internet.
+- Mode secours local si l’API est indisponible ou bloquée par le navigateur.
+- Cache PWA corrigé pour ne pas mettre en cache les appels API.
 
-## Publication
-Dézipper le contenu à la racine du dépôt GitHub, puis faire un commit et un push.
+## Important
+La source gratuite intégrée est open source / publique, mais elle n’est pas une source officielle FIFA. Pour une donnée officiellement licenciée FIFA/Sportradar/Opta, il faut généralement une API payante ou un accord de données.
+
+
+## V2.0.1 - API live réelle
+- Source internet gratuite sans clé : ESPN public scoreboard (`site.api.espn.com`).
+- Rafraîchissement automatique toutes les 45 secondes.
+- Bouton Actualiser = nouvel appel réseau réel (`fetch`, `cache: no-store`).
+- Secours local automatique si l'API est indisponible ou modifie son format.
+- Les données ESPN sont publiques et gratuites, mais non officielles FIFA et non garanties contractuellement.

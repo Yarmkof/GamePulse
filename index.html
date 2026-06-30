@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#071018" />
-  <meta name="description" content="GamePulse 1.0.10 Premium - Coupe du Monde, résultats, buteurs, assistant IA et vrai tableau dynamique." />
-  <title>GamePulse 1.0.10 Premium</title>
+  <meta name="description" content="GamePulse 2.0 - Coupe du Monde, données internet, résultats, buteurs, assistant IA et tableau dynamique." />
+  <title>GamePulse 2.0</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="assets/css/styles.css" />
@@ -37,7 +37,7 @@
       <header class="topbar">
         <div>
           <p class="eyebrow">Coupe du Monde 2026</p>
-          <h1 id="pageTitle">GamePulse 1.0.10 Premium</h1>
+          <h1 id="pageTitle">GamePulse 2.0</h1>
         </div>
         <div class="top-actions">
           <span id="lastUpdate" class="pill">Mise à jour —</span>
@@ -51,7 +51,7 @@
             <span class="live-dot"></span>
             <p class="eyebrow">Coupe du Monde 2026</p>
             <h2 id="currentStage">16e de finale</h2>
-            <p class="muted">Accueil allégé : les résultats et buteurs ont maintenant leurs propres boutons. Le tableau animé est disponible uniquement dans l’onglet Tableau.</p>
+            <p class="muted">Version 2.0 : tentative de mise à jour depuis une API internet toutes les 45 secondes, avec secours local si la source est indisponible.</p>
           </div>
           <div class="hero-score">
             <strong id="aiFavorite">France</strong>
@@ -103,7 +103,7 @@
       </section>
 
       <section id="bracket" class="view">
-        <div class="section-head"><h3>Tableau final</h3><span class="pill">Dynamique 1.0.10</span></div>
+        <div class="section-head"><h3>Tableau final</h3><span class="pill">Dynamique 2.0</span></div>
         <div id="bracketGrid" class="bracket-grid"></div>
       </section>
 
@@ -118,7 +118,7 @@
             </select>
           </div>
           <ol id="scorersList" class="ranking scorers-ranking"></ol>
-          <p class="source-note">Source saisie : classement Footmercato au 30 juin.</p>
+          <p class="source-note">Buteurs : affichage internet si disponible, sinon secours local Footmercato au 30 juin.</p>
         </div>
       </section>
 
