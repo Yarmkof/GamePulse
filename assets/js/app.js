@@ -1,6 +1,6 @@
 
-const APP_VERSION = 'V9.1.0';
-const LAST_DATA_UPDATE = '30/06/2026 09:30';
+const APP_VERSION = 'V9.2.0';
+const LAST_DATA_UPDATE = '30/06/2026 10:05';
 const stages = ['Groupes','32es','16es','8es','Quarts','Demi','Finale','Champion'];
 const currentStageIndex = 2;
 
@@ -69,7 +69,26 @@ let matches = [
 ];
 
 const scorers = [
-  ['Kylian Mbappé', 'France', 6], ['Vinicius Jr', 'Brésil', 5], ['Harry Kane', 'Angleterre', 4], ['Lionel Messi', 'Argentine', 3], ['Cody Gakpo', 'Pays-Bas', 3], ['Lamine Yamal', 'Espagne', 3], ['Jonathan David', 'Canada', 2], ['Achraf Hakimi', 'Maroc', 2], ['Alexander Isak', 'Suède', 2], ['Julio Enciso', 'Paraguay', 2]
+  ['L. Messi', 'Argentine', 6, '🇦🇷'],
+  ['E. Haaland', 'Norvège', 4, '🇳🇴'],
+  ['O. Dembélé', 'France', 4, '🇫🇷'],
+  ['Vinícius Júnior', 'Brésil', 4, '🇧🇷'],
+  ['K. Mbappé', 'France', 4, '🇫🇷'],
+  ['D. Undav', 'Allemagne', 3, '🇩🇪'],
+  ['J. Manzambi', 'Suisse', 3, '🇨🇭'],
+  ['B. Brobbey', 'Pays-Bas', 3, '🇳🇱'],
+  ['Matheus Cunha', 'Brésil', 3, '🇧🇷'],
+  ['I. Saibari', 'Maroc', 3, '🇲🇦'],
+  ['I. Sarr', 'Sénégal', 3, '🇸🇳'],
+  ['H. Kane', 'Angleterre', 3, '🏴'],
+  ['E. Just', 'Nouvelle-Zélande', 3, '🇳🇿'],
+  ['Y. Wissa', 'RD Congo', 3, '🇨🇩'],
+  ['J. David', 'Canada', 3, '🇨🇦'],
+  ['E. Mahmić', 'Bosnie', 2, '🇧🇦'],
+  ['M. Arnautović', 'Autriche', 2, '🇦🇹'],
+  ['A. Elanga', 'Suède', 2, '🇸🇪'],
+  ['C. Summerville', 'Pays-Bas', 2, '🇳🇱'],
+  ['N. Pépé', 'Côte d’Ivoire', 2, '🇨🇮']
 ];
 const yellowCards = [['Rodri','Espagne',4],['Romero','Argentine',3],['Casemiro','Brésil',3],['Xhaka','Suisse',3],['Ugarte','Uruguay',2],['Konaté','France',2],['Davies','Canada',2],['Dumfries','Pays-Bas',2],['Kimmich','Allemagne',2],['Amrabat','Maroc',2]];
 const redCards = [['Romero','Argentine',1],['Otamendi','Argentine',1],['Koulibaly','Sénégal',1],['Richarlison','Brésil',1],['Hernández','Mexique',1]];
@@ -126,8 +145,9 @@ function renderMatches(filter='all'){
   $('featuredMatches').innerHTML = matches.slice(0,4).map(matchCard).join('');
 }
 function renderStats(){
-  const make = (arr) => arr.map(([p,t,n])=>`<li>${p} <small class="muted">${t}</small><span>${n}</span></li>`).join('');
-  $('scorersList').innerHTML = make(scorers);
+  const make = (arr) => arr.map(([p,t,n,f])=>`<li><strong>${escapeHtml(p)}</strong> <small class="muted">${f || ''} ${escapeHtml(t)}</small><span>${n} but${n>1?'s':''}</span></li>`).join('');
+  const limit = Number($('scorersLimit')?.value || 20);
+  $('scorersList').innerHTML = make(scorers.slice(0, limit));
   if($('homeScorersList')) $('homeScorersList').innerHTML = make(scorers.slice(0,5));
   $('yellowList').innerHTML = make(yellowCards);
   $('redList').innerHTML = make(redCards);
@@ -222,7 +242,7 @@ function navigate(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
   $(view).classList.add('active-view');
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
-  const titles = {home:'GamePulse V9.1 Premium',matches:'Matchs Coupe du Monde',bracket:'Tableau interactif',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
+  const titles = {home:'GamePulse V9.3 Premium',matches:'Matchs Coupe du Monde',bracket:'Tableau interactif',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
   $('pageTitle').textContent = titles[view] || 'GamePulse';
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -230,7 +250,7 @@ function botAnswer(q){
   q = q.toLowerCase();
   if(q.includes('allemagne') || q.includes('paraguay')) return `Allemagne - Paraguay est terminé : 1-1, puis Paraguay qualifié 4-3 aux tirs au but. Le blocage à la 76e a été corrigé en V9.`;
   if(q.includes('favori') || q.includes('gagner')) return `Le favori IA actuel est ${[...teams].sort((a,b)=>b.power-a.power)[0].name}. L'estimation tient compte du niveau d'équipe, des résultats et de la progression du tableau.`;
-  if(q.includes('buteur')) return `Le meilleur buteur actuel est ${scorers[0][0]} avec ${scorers[0][2]} buts. Le top 10 est disponible dans l'onglet Statistiques.`;
+  if(q.includes('buteur')) return `Le meilleur buteur actuel est ${scorers[0][0]} avec ${scorers[0][2]} buts. Le top 20 est disponible dans l'onglet Statistiques via le menu déroulant.`;
   if(q.includes('serré')) return `Les matchs les plus serrés affichés sont Allemagne - Paraguay et Pays-Bas - Maroc : les deux se sont terminés aux tirs au but.`;
   if(q.includes('progression') || q.includes('étape')) return `La compétition est actuellement en 16e de finale. Le tableau interactif affiche les qualifiés connus et les prochains adversaires.`;
   return `Analyse IA : GamePulse compare score, statut, niveau des équipes, buteurs et tableau. Pour une vraie IA connectée, il faudra brancher une API football et une clé IA côté serveur.`;
@@ -252,20 +272,104 @@ function showMatchDetails(id){
   const txt = `${m.hf} ${m.home} ${m.status==='upcoming'?'vs':`${m.hs}-${m.as}`} ${m.away} ${m.af}\n${statusLabel(m)}\n${m.scorers?.length ? 'Buteurs : ' + m.scorers.join(', ') : 'Buteurs : à venir'}\n${m.notes || ''}`;
   alert(txt);
 }
+
+
+// V9.3 — tuiles déplaçables et redimensionnables
+const layoutKey = 'gamepulse-v93-tile-layout';
+const sizeCycle = ['small','side','wide','large','hero','full'];
+function getTileBoard(){ return $('tileBoard'); }
+function saveTileLayout(){
+  const board = getTileBoard(); if(!board) return;
+  const layout = [...board.querySelectorAll('.dashboard-tile')].map(tile => ({id: tile.dataset.tile, size: tile.dataset.size || 'side'}));
+  localStorage.setItem(layoutKey, JSON.stringify(layout));
+}
+function applyTileLayout(){
+  const board = getTileBoard(); if(!board) return;
+  try{
+    const layout = JSON.parse(localStorage.getItem(layoutKey) || '[]');
+    if(!Array.isArray(layout) || !layout.length) return;
+    const tiles = new Map([...board.querySelectorAll('.dashboard-tile')].map(tile => [tile.dataset.tile, tile]));
+    layout.forEach(item => {
+      const tile = tiles.get(item.id);
+      if(tile){ tile.dataset.size = item.size || tile.dataset.size || 'side'; board.appendChild(tile); }
+    });
+  }catch(e){ localStorage.removeItem(layoutKey); }
+}
+function resetTileLayout(){
+  localStorage.removeItem(layoutKey);
+  location.reload();
+}
+function initTileLayout(){
+  const board = getTileBoard(); if(!board) return;
+  applyTileLayout();
+  let dragged = null;
+  board.addEventListener('dragstart', e => {
+    const tile = e.target.closest('.dashboard-tile');
+    if(!tile || !document.body.classList.contains('layout-editing')) { e.preventDefault(); return; }
+    dragged = tile;
+    tile.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', tile.dataset.tile);
+  });
+  board.addEventListener('dragend', () => {
+    if(dragged) dragged.classList.remove('dragging');
+    board.querySelectorAll('.drop-target').forEach(t=>t.classList.remove('drop-target'));
+    dragged = null;
+    saveTileLayout();
+  });
+  board.addEventListener('dragover', e => {
+    if(!dragged) return;
+    e.preventDefault();
+    const target = e.target.closest('.dashboard-tile');
+    board.querySelectorAll('.drop-target').forEach(t=>t.classList.remove('drop-target'));
+    if(target && target !== dragged){ target.classList.add('drop-target'); }
+  });
+  board.addEventListener('drop', e => {
+    if(!dragged) return;
+    e.preventDefault();
+    const target = e.target.closest('.dashboard-tile');
+    if(target && target !== dragged){
+      const rect = target.getBoundingClientRect();
+      const after = e.clientY > rect.top + rect.height / 2 || e.clientX > rect.left + rect.width / 2;
+      board.insertBefore(dragged, after ? target.nextSibling : target);
+    }
+    board.querySelectorAll('.drop-target').forEach(t=>t.classList.remove('drop-target'));
+    saveTileLayout();
+  });
+  board.addEventListener('click', e => {
+    const btn = e.target.closest('.tile-size');
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const tile = btn.closest('.dashboard-tile');
+    const current = tile.dataset.size || 'side';
+    const next = sizeCycle[(sizeCycle.indexOf(current) + 1) % sizeCycle.length];
+    tile.dataset.size = next;
+    saveTileLayout();
+  });
+  $('editLayoutBtn')?.addEventListener('click', () => {
+    document.body.classList.toggle('layout-editing');
+    const active = document.body.classList.contains('layout-editing');
+    $('editLayoutBtn').textContent = active ? '✅ Mode édition actif' : '✋ Déplacer / redimensionner';
+  });
+  $('resetLayoutBtn')?.addEventListener('click', resetTileLayout);
+}
+
 function init(){
-  renderStages(); renderMatches(); renderStats(); renderTeams('all'); renderBracket(); updateTime();
-  addMsg('Bienvenue sur GamePulse V9.1. Les bugs V8 connus ont été corrigés : actualisation, Allemagne-Paraguay, buteurs, équipes et tableau interactif.');
+  renderStages(); renderMatches(); renderStats(); renderTeams('all'); renderBracket(); updateTime(); initTileLayout();
+  addMsg('Bienvenue sur GamePulse V9.3. Les bugs V8 connus ont été corrigés : actualisation, Allemagne-Paraguay, buteurs, équipes et tableau interactif.');
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
   document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMatches(b.dataset.filter)}));
   $('teamStatusSelect').value='all';
   $('teamStatusSelect').addEventListener('change',e=>renderTeams(e.target.value));
+  if($('scorersLimit')) $('scorersLimit').addEventListener('change', renderStats);
   $('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('light');$('themeBtn').textContent=document.body.classList.contains('light')?'🌙 Mode sombre':'☀️ Mode clair'});
   $('refreshBtn').addEventListener('click',refreshData);
   document.body.addEventListener('click', e => { const card=e.target.closest('.match-card'); if(card) showMatchDetails(card.dataset.matchId); const bm=e.target.closest('.bracket-match'); if(bm) alert('Tableau interactif : ' + bm.dataset.bracket); });
   document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>addMsg(botAnswer(b.dataset.question))));
   $('assistantForm').addEventListener('submit',e=>{e.preventDefault();const input=$('assistantInput'); if(!input.value.trim()) return; addMsg(input.value,'user'); setTimeout(()=>addMsg(botAnswer(input.value)),250); input.value='';});
   setInterval(refreshData,30000);
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=91').catch(()=>{});
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=93').catch(()=>{});
   let deferredPrompt; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').classList.remove('hidden')});
   $('installBtn').addEventListener('click',async()=>{ if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;$('installBtn').classList.add('hidden')} });
 }

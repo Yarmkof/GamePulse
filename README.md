@@ -1,27 +1,15 @@
-# GamePulse V9 Ultimate
+# GamePulse V9.3 Premium
 
-Version corrigée de GamePulse.
+Application sportive PWA mobile-first : Coupe du Monde, scores, tableau interactif animé, statistiques, assistant IA et dashboard personnalisable.
 
-## Corrections V9
-- Correction du match Allemagne - Paraguay : terminé 1-1, Paraguay qualifié 4-3 aux tirs au but.
-- Bouton Actualiser réparé : l’interface est rendue complètement et le faux live bloqué est corrigé.
-- Cache PWA mis à jour en `gamepulse-v9-cache-20260630` avec nettoyage des anciens caches.
-- Liste complète des 48 équipes avec filtre Qualifiées / Éliminées / Toutes.
-- Top buteurs corrigé et enrichi.
-- Tableau final rendu interactif avec qualifiés connus.
-- Assistant IA mis à jour pour répondre aux nouveaux états des matchs.
+## Nouveautés V9.3
+- Dashboard d'accueil réorganisable par glisser-déposer.
+- Redimensionnement manuel des tuiles : petite, colonne, large, grande, héro et pleine largeur.
+- Sauvegarde automatique de la disposition dans le navigateur.
+- Bouton de réinitialisation de la mise en page.
+- Tableau interactif animé conservé en grande tuile visible.
+- Top 20 buteurs corrigé au 30 juin.
+- Cache PWA forcé en V9.3.
 
-## Important
-Cette V9 reste utilisable sans clé API. Pour obtenir de vraies données live automatiques, il faudra ensuite brancher une API football côté serveur.
-
-
-## V9.1
-- Ajout du tableau Coupe du Monde interactif animé inspiré de la pièce jointe.
-- Cartes cliquables, animation d’apparition, champion, troisième place et vue mobile horizontale.
-
-
-## V9.1 Premium
-- Boutons Actualiser et Mode clair remontés sous la navigation.
-- Tableau interactif animé intégré sur la page d’accueil, dans la partie droite.
-- Aperçu compact des matchs et top buteurs à gauche.
-- Cache PWA mis à jour pour forcer la nouvelle version.
+## Publication
+Dézipper le contenu à la racine du dépôt GitHub, puis faire un commit et un push.
