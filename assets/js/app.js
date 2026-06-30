@@ -1,6 +1,6 @@
 
-const APP_VERSION = 'V9.2.0';
-const LAST_DATA_UPDATE = '30/06/2026 10:05';
+const APP_VERSION = 'V9.4.0';
+const LAST_DATA_UPDATE = '30/06/2026 10:35';
 const stages = ['Groupes','32es','16es','8es','Quarts','Demi','Finale','Champion'];
 const currentStageIndex = 2;
 
@@ -141,21 +141,27 @@ function renderMatches(filter='all'){
   const today = todayFr();
   let list = matches.filter(m => filter==='all' || (filter==='today' ? m.date===today : m.status===filter));
   if(!list.length) list = matches.filter(m => m.status === 'upcoming').slice(0,3);
-  $('matchesList').innerHTML = list.map(matchCard).join('');
-  $('featuredMatches').innerHTML = matches.slice(0,4).map(matchCard).join('');
+  if($('matchesList')) $('matchesList').innerHTML = list.map(matchCard).join('');
+  if($('featuredMatches')) $('featuredMatches').innerHTML = matches.filter(m=>m.status!=='finished').slice(0,4).map(matchCard).join('');
+  renderResults();
+}
+function renderResults(){
+  const finished = matches.filter(m => m.status === 'finished');
+  const html = finished.map(matchCard).join('') || '<div class="empty-state">Aucun résultat disponible.</div>';
+  if($('resultsList')) $('resultsList').innerHTML = html;
+  if($('homeResultsList')) $('homeResultsList').innerHTML = finished.slice(0,3).map(matchCard).join('');
 }
 function renderStats(){
   const make = (arr) => arr.map(([p,t,n,f])=>`<li><strong>${escapeHtml(p)}</strong> <small class="muted">${f || ''} ${escapeHtml(t)}</small><span>${n} but${n>1?'s':''}</span></li>`).join('');
   const limit = Number($('scorersLimit')?.value || 20);
-  $('scorersList').innerHTML = make(scorers.slice(0, limit));
-  if($('homeScorersList')) $('homeScorersList').innerHTML = make(scorers.slice(0,5));
-  $('yellowList').innerHTML = make(yellowCards);
-  $('redList').innerHTML = make(redCards);
-  $('todayMatches').textContent = matches.filter(m=>m.date===todayFr()).length;
-  $('todayGoals').textContent = matches.filter(m=>m.date===todayFr()).reduce((s,m)=>s+(m.goals||0),0);
-  $('yellowCards').textContent = matches.reduce((s,m)=>s+(m.yellow||0),0) + 18;
-  $('redCards').textContent = matches.reduce((s,m)=>s+(m.red||0),0) + 2;
-  $('aiFavorite').textContent = [...teams].sort((a,b)=>b.power-a.power)[0].name;
+  if($('scorersList')) $('scorersList').innerHTML = make(scorers.slice(0, limit));
+  if($('yellowList')) $('yellowList').innerHTML = make(yellowCards);
+  if($('redList')) $('redList').innerHTML = make(redCards);
+  if($('todayMatches')) $('todayMatches').textContent = matches.filter(m=>m.date===todayFr()).length;
+  if($('todayGoals')) $('todayGoals').textContent = matches.filter(m=>m.date===todayFr()).reduce((s,m)=>s+(m.goals||0),0);
+  if($('yellowCards')) $('yellowCards').textContent = matches.reduce((s,m)=>s+(m.yellow||0),0) + 18;
+  if($('redCards')) $('redCards').textContent = matches.reduce((s,m)=>s+(m.red||0),0) + 2;
+  if($('aiFavorite')) $('aiFavorite').textContent = [...teams].sort((a,b)=>b.power-a.power)[0].name;
 }
 function renderTeams(status='all'){
   const list = [...teams].filter(t => status==='all' || t.status===status).sort((a,b)=>a.group.localeCompare(b.group) || a.name.localeCompare(b.name));
@@ -163,7 +169,7 @@ function renderTeams(status='all'){
 }
 
 const bracketRounds = [
-  {id:'r32', title:'Round of 32', matches:[
+  {id:'r32', title:'16e de finale', matches:[
     {a:'Canada', af:'🇨🇦', as:'2', b:'Nouvelle-Zélande', bf:'🇳🇿', bs:'0', winner:'Canada'},
     {a:'Chili', af:'🇨🇱', as:'1', b:'Japon', bf:'🇯🇵', bs:'2', winner:'Japon'},
     {a:'Colombie', af:'🇨🇴', as:'2', b:'Australie', bf:'🇦🇺', bs:'1', winner:'Colombie'},
@@ -181,7 +187,7 @@ const bracketRounds = [
     {a:'Italie', af:'🇮🇹', as:'2', b:'Turquie', bf:'🇹🇷', bs:'0', winner:'Italie'},
     {a:'Uruguay', af:'🇺🇾', as:'2', b:'Autriche', bf:'🇦🇹', bs:'1', winner:'Uruguay'}
   ]},
-  {id:'r16', title:'Round of 16', matches:[
+  {id:'r16', title:'8e de finale', matches:[
     {a:'Canada', af:'🇨🇦', as:'1', b:'Japon', bf:'🇯🇵', bs:'0', winner:'Canada'},
     {a:'Colombie', af:'🇨🇴', as:'1', b:'Portugal', bf:'🇵🇹', bs:'2', winner:'Portugal'},
     {a:'France', af:'🇫🇷', as:'2', b:'États-Unis', bf:'🇺🇸', bs:'0', winner:'France'},
@@ -191,7 +197,7 @@ const bracketRounds = [
     {a:'Espagne', af:'🇪🇸', as:'1', b:'Allemagne', bf:'🇩🇪', bs:'0', winner:'Espagne'},
     {a:'Italie', af:'🇮🇹', as:'2', b:'Uruguay', bf:'🇺🇾', bs:'0', winner:'Italie'}
   ]},
-  {id:'qf', title:'Quarts', matches:[
+  {id:'qf', title:'Quarts de finale', matches:[
     {a:'Canada', af:'🇨🇦', as:'0', b:'Portugal', bf:'🇵🇹', bs:'1', winner:'Portugal'},
     {a:'France', af:'🇫🇷', as:'2', b:'Angleterre', bf:'🏴', bs:'1', winner:'France'},
     {a:'Brésil', af:'🇧🇷', as:'2', b:'Argentine', bf:'🇦🇷', bs:'3', winner:'Argentine'},
@@ -208,15 +214,15 @@ const bracketRounds = [
 const bracketMeta = {
   champion:{team:'France', flag:'🇫🇷'},
   third:{team:'Argentine', flag:'🇦🇷'},
-  subtitle:'Fan concept animé • cliquez sur un match pour voir le détail'
+  subtitle:'Liseré vert : équipe qualifiée • liseré rouge : équipe arrêtée'
 };
 function bracketMatch(m, roundIndex, matchIndex){
   const winA = m.winner === m.a;
   const winB = m.winner === m.b;
   const delay = (roundIndex * 120 + matchIndex * 35);
   return `<button class="bracket-match animated" style="--delay:${delay}ms" data-bracket="${escapeHtml(m.a)} ${escapeHtml(m.as)} - ${escapeHtml(m.bs)} ${escapeHtml(m.b)}" data-winner="${escapeHtml(m.winner)}">
-    <span class="bm-team ${winA?'winner':''}"><em>${m.af}</em><strong>${escapeHtml(m.a)}</strong><b>${escapeHtml(m.as)}</b></span>
-    <span class="bm-team ${winB?'winner':''}"><em>${m.bf}</em><strong>${escapeHtml(m.b)}</strong><b>${escapeHtml(m.bs)}</b></span>
+    <span class="bm-team ${winA?'winner still-in':''} ${!winA?'stopped':''}"><em>${m.af}</em><strong>${escapeHtml(m.a)}</strong><b>${escapeHtml(m.as)}</b></span>
+    <span class="bm-team ${winB?'winner still-in':''} ${!winB?'stopped':''}"><em>${m.bf}</em><strong>${escapeHtml(m.b)}</strong><b>${escapeHtml(m.bs)}</b></span>
   </button>`;
 }
 function renderBracket(){
@@ -224,8 +230,8 @@ function renderBracket(){
   const markup = `<div class="prediction-bracket">
     <div class="bracket-hero">
       <p class="eyebrow">2026 FIFA World Cup</p>
-      <h3>Prediction Bracket</h3>
-      <span class="pill">${bracketMeta.subtitle}</span>
+      <h3>Tableau interactif</h3>
+      <span class="pill">${bracketMeta.subtitle}</span><div class="bracket-legend"><span class="legend-item"><i class="legend-dot green"></i> encore en course</span><span class="legend-item"><i class="legend-dot red"></i> parcours arrêté</span></div>
     </div>
     <div class="bracket-scroll">${rounds}</div>
     <aside class="champion-card">
@@ -242,7 +248,7 @@ function navigate(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
   $(view).classList.add('active-view');
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
-  const titles = {home:'GamePulse V9.3 Premium',matches:'Matchs Coupe du Monde',bracket:'Tableau interactif',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
+  const titles = {home:'GamePulse V9.4 Premium',matches:'Matchs Coupe du Monde',results:'Résultats',bracket:'Tableau interactif',scorers:'Classement des buteurs',stats:'Statistiques',teams:'Équipes',assistant:'Assistant IA'};
   $('pageTitle').textContent = titles[view] || 'GamePulse';
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -250,7 +256,7 @@ function botAnswer(q){
   q = q.toLowerCase();
   if(q.includes('allemagne') || q.includes('paraguay')) return `Allemagne - Paraguay est terminé : 1-1, puis Paraguay qualifié 4-3 aux tirs au but. Le blocage à la 76e a été corrigé en V9.`;
   if(q.includes('favori') || q.includes('gagner')) return `Le favori IA actuel est ${[...teams].sort((a,b)=>b.power-a.power)[0].name}. L'estimation tient compte du niveau d'équipe, des résultats et de la progression du tableau.`;
-  if(q.includes('buteur')) return `Le meilleur buteur actuel est ${scorers[0][0]} avec ${scorers[0][2]} buts. Le top 20 est disponible dans l'onglet Statistiques via le menu déroulant.`;
+  if(q.includes('buteur')) return `Le meilleur buteur actuel est ${scorers[0][0]} avec ${scorers[0][2]} buts. Le top 20 est disponible dans le bouton Buteurs via le menu déroulant.`;
   if(q.includes('serré')) return `Les matchs les plus serrés affichés sont Allemagne - Paraguay et Pays-Bas - Maroc : les deux se sont terminés aux tirs au but.`;
   if(q.includes('progression') || q.includes('étape')) return `La compétition est actuellement en 16e de finale. Le tableau interactif affiche les qualifiés connus et les prochains adversaires.`;
   return `Analyse IA : GamePulse compare score, statut, niveau des équipes, buteurs et tableau. Pour une vraie IA connectée, il faudra brancher une API football et une clé IA côté serveur.`;
@@ -356,8 +362,8 @@ function initTileLayout(){
 }
 
 function init(){
-  renderStages(); renderMatches(); renderStats(); renderTeams('all'); renderBracket(); updateTime(); initTileLayout();
-  addMsg('Bienvenue sur GamePulse V9.3. Les bugs V8 connus ont été corrigés : actualisation, Allemagne-Paraguay, buteurs, équipes et tableau interactif.');
+  renderStages(); renderMatches(); renderStats(); renderTeams('all'); renderBracket(); updateTime();
+  addMsg('Bienvenue sur GamePulse V9.4. Le dashboard fixe est rétabli, les buteurs sont dans leur menu, les résultats ont leur page et le tableau affiche les parcours en vert/rouge.');
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
   document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMatches(b.dataset.filter)}));
   $('teamStatusSelect').value='all';
@@ -369,7 +375,7 @@ function init(){
   document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>addMsg(botAnswer(b.dataset.question))));
   $('assistantForm').addEventListener('submit',e=>{e.preventDefault();const input=$('assistantInput'); if(!input.value.trim()) return; addMsg(input.value,'user'); setTimeout(()=>addMsg(botAnswer(input.value)),250); input.value='';});
   setInterval(refreshData,30000);
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=93').catch(()=>{});
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js?v=94').catch(()=>{});
   let deferredPrompt; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').classList.remove('hidden')});
   $('installBtn').addEventListener('click',async()=>{ if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;$('installBtn').classList.add('hidden')} });
 }
