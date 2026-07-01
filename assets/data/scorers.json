@@ -1,0 +1,26 @@
+{
+  "source": "Secours local Footmercato fourni au 30 juin",
+  "updatedAt": "2026-06-30",
+  "scorers": [
+    {"player":"L. Messi","team":"Argentine","goals":6,"flag":"🇦🇷"},
+    {"player":"E. Haaland","team":"Norvège","goals":4,"flag":"🇳🇴"},
+    {"player":"O. Dembélé","team":"France","goals":4,"flag":"🇫🇷"},
+    {"player":"Vinícius Júnior","team":"Brésil","goals":4,"flag":"🇧🇷"},
+    {"player":"K. Mbappé","team":"France","goals":4,"flag":"🇫🇷"},
+    {"player":"D. Undav","team":"Allemagne","goals":3,"flag":"🇩🇪"},
+    {"player":"J. Manzambi","team":"Suisse","goals":3,"flag":"🇨🇭"},
+    {"player":"B. Brobbey","team":"Pays-Bas","goals":3,"flag":"🇳🇱"},
+    {"player":"Matheus Cunha","team":"Brésil","goals":3,"flag":"🇧🇷"},
+    {"player":"I. Saibari","team":"Maroc","goals":3,"flag":"🇲🇦"},
+    {"player":"I. Sarr","team":"Sénégal","goals":3,"flag":"🇸🇳"},
+    {"player":"H. Kane","team":"Angleterre","goals":3,"flag":"🏴"},
+    {"player":"E. Just","team":"Nouvelle-Zélande","goals":3,"flag":"🇳🇿"},
+    {"player":"Y. Wissa","team":"RD Congo","goals":3,"flag":"🇨🇩"},
+    {"player":"J. David","team":"Canada","goals":3,"flag":"🇨🇦"},
+    {"player":"E. Mahmić","team":"Bosnie","goals":2,"flag":"🇧🇦"},
+    {"player":"M. Arnautović","team":"Autriche","goals":2,"flag":"🇦🇹"},
+    {"player":"A. Elanga","team":"Suède","goals":2,"flag":"🇸🇪"},
+    {"player":"C. Summerville","team":"Pays-Bas","goals":2,"flag":"🇳🇱"},
+    {"player":"N. Pépé","team":"Côte d’Ivoire","goals":2,"flag":"🇨🇮"}
+  ]
+}

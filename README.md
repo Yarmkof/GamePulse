@@ -1,27 +1,14 @@
-# GamePulse 2.0.2 — Fondation live propre
+# GamePulse 2.0.3
 
-Version refondue en modules pour éviter une application monolithique.
+Application PWA Coupe du Monde avec architecture modulaire, données live ESPN gratuites non officielles, refresh automatique toutes les 45 secondes, classement buteurs rafraîchissable via `assets/data/scorers.json`, version desktop et version mobile dédiée.
 
-## Inclus
-- Architecture propre `assets/js` en modules.
-- API ESPN public scoreboard sans clé.
-- Refresh automatique toutes les 45 secondes.
-- Mode secours local si l’API ne répond pas.
-- Tableau vertical qui commence par la phase de groupes.
-- Vue réduite de 20 % sur l’accueil pour avoir une meilleure vue d’ensemble.
-- Menu : Accueil, Matchs, Résultats, Tableau, Buteurs, Équipes, Assistant IA.
-- Top 20 buteurs en menu déroulant.
-- Cache PWA versionné en `gamepulse-2-0-2-cache`.
+## Changements 2.0.3
+- Accueil nettoyé : suppression de la vue d’ensemble verticale.
+- Tableau vertical uniquement dans le menu **Tableau**.
+- Affichage des matchs les plus récents en haut.
+- Buteurs rafraîchis à chaque synchronisation via fichier JSON dédié.
+- Ajout d’une version mobile complète : `mobile.html`.
+- Cache PWA mis à jour.
 
-## Important
-ESPN est gratuit et sans clé, mais ce n’est pas une API officielle FIFA. Pour des données officiellement licenciées, il faudra passer par un fournisseur payant ou un accès FIFA/licencié.
-
-## Publication
-Summary GitHub recommandé :
-
-```text
-GamePulse 2.0.2 - Fondation live modulaire
-```
-
-Lien web après Push origin :
-https://yarmkof.github.io/GamePulse/
+Lien GitHub Pages : https://yarmkof.github.io/GamePulse/
+Lien mobile : https://yarmkof.github.io/GamePulse/mobile.html

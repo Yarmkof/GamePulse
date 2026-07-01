@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#071018" />
+  <title>GamePulse Mobile 2.0.3</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body class="mobile-body">
+  <div class="mobile-app">
+    <header class="mobile-header">
+      <div class="brand-lite"><img src="assets/icons/logo.svg" alt="GamePulse"><div><strong>GamePulse</strong><small>Mobile live</small></div></div>
+      <button id="refreshBtn" class="round-btn">↻</button>
+    </header>
+    <main class="mobile-main">
+      <section id="home" class="view active-view mobile-view">
+        <div class="mobile-hero"><span class="live-dot"></span><h1>Coupe du Monde 2026</h1><p id="lastUpdate">Mise à jour —</p></div>
+        <div class="mobile-metrics"><article><span>Aujourd’hui</span><strong id="todayMatches">0</strong></article><article><span>Buts</span><strong id="totalGoals">0</strong></article><article><span>Terminés</span><strong id="finishedCount">0</strong></article></div>
+        <h2>Matchs récents</h2><div id="featuredMatches" class="match-list compact"></div>
+      </section>
+      <section id="matches" class="view mobile-view"><h2>Matchs récents</h2><div id="matchesList" class="match-list"></div></section>
+      <section id="results" class="view mobile-view"><h2>Résultats</h2><div id="resultsList" class="match-list"></div></section>
+      <section id="bracket" class="view mobile-view"><h2>Tableau vertical</h2><div id="verticalTournament" class="vertical-tournament premium-vertical mobile-bracket"></div></section>
+      <section id="scorers" class="view mobile-view"><h2>Buteurs</h2><ol id="scorersList" class="ranking"></ol><p id="scorersNote" class="source-note"></p></section>
+      <section id="teams" class="view mobile-view"><h2>Équipes</h2><div id="teamsGrid" class="teams-grid"></div></section>
+      <section id="assistant" class="view mobile-view"><div class="assistant-card"><div class="assistant-header"><span>🤖</span><div><h3>Assistant IA</h3><p>Pose ta question.</p></div></div><div id="chatBox" class="chat-box"></div><form id="assistantForm" class="assistant-form"><input id="assistantInput" placeholder="Question…"><button class="primary-btn">OK</button></form></div></section>
+    </main>
+    <nav class="mobile-bottom">
+      <button class="nav-link active" data-view="home">🏠<span>Accueil</span></button>
+      <button class="nav-link" data-view="matches">⚽<span>Matchs</span></button>
+      <button class="nav-link" data-view="results">✅<span>Résultats</span></button>
+      <button class="nav-link" data-view="bracket">🏆<span>Tableau</span></button>
+      <button class="nav-link" data-view="scorers">🥇<span>Buteurs</span></button>
+    </nav>
+  </div>
+  <span id="syncStatus" class="hidden"></span><span id="apiNote" class="hidden"></span><span id="scorersSource" class="hidden"></span><button id="themeBtn" class="hidden"></button><select id="scorersLimit" class="hidden"><option value="20" selected>20</option></select><select id="teamStatusSelect" class="hidden"><option value="all" selected>all</option></select><div id="homeResults" class="hidden"></div><ol id="homeScorers" class="hidden"></ol><button id="installBtn" class="hidden"></button><h1 id="pageTitle" class="hidden"></h1>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-export const APP_VERSION = '2.0.2';
+export const APP_VERSION = '2.0.3';
 export const REFRESH_MS = 45000;
 
 export const scorersFallback = [
