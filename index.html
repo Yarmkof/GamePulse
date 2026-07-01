@@ -4,85 +4,73 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#071018" />
-  <meta name="description" content="GamePulse 2.0 - Coupe du Monde, données internet, résultats, buteurs, assistant IA et tableau dynamique." />
-  <title>GamePulse 2.0</title>
+  <meta name="description" content="GamePulse 2.0.2 - Coupe du Monde, scores live, tableau vertical, résultats, buteurs et assistant IA." />
+  <title>GamePulse 2.0.2</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/main.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navigation principale">
-      <button class="brand home-btn" data-view="home" title="Accueil">
+      <button class="brand nav-link active" data-view="home" title="Accueil">
         <img src="assets/icons/logo.svg" alt="GamePulse" />
-        <span><strong>GamePulse</strong><small>World Cup AI</small></span>
+        <span><strong>GamePulse</strong><small>Live 2.0.2</small></span>
       </button>
       <nav>
-        <button class="nav-btn active" data-view="home">🏠 <span>Accueil</span></button>
-        <button class="nav-btn" data-view="matches">⚽ <span>Matchs</span></button>
-        <button class="nav-btn" data-view="results">✅ <span>Résultats</span></button>
-        <button class="nav-btn" data-view="bracket">🏆 <span>Tableau</span></button>
-        <button class="nav-btn" data-view="scorers">🥇 <span>Buteurs</span></button>
-        <button class="nav-btn" data-view="stats">📊 <span>Stats</span></button>
-        <button class="nav-btn" data-view="teams">🌍 <span>Équipes</span></button>
-        <button class="nav-btn" data-view="assistant">🤖 <span>Assistant IA</span></button>
+        <button class="nav-link active" data-view="home">🏠 <span>Accueil</span></button>
+        <button class="nav-link" data-view="matches">⚽ <span>Matchs</span></button>
+        <button class="nav-link" data-view="results">✅ <span>Résultats</span></button>
+        <button class="nav-link" data-view="bracket">🏆 <span>Tableau</span></button>
+        <button class="nav-link" data-view="scorers">🥇 <span>Buteurs</span></button>
+        <button class="nav-link" data-view="teams">🌍 <span>Équipes</span></button>
+        <button class="nav-link" data-view="assistant">🤖 <span>Assistant IA</span></button>
       </nav>
-      <div class="sidebar-footer">
+      <div class="sidebar-actions">
         <button id="refreshBtn" class="ghost-btn">↻ Actualiser</button>
         <button id="themeBtn" class="ghost-btn">☀️ Mode clair</button>
       </div>
+      <p class="api-note" id="apiNote">Source : initialisation…</p>
     </aside>
 
     <main class="main">
       <header class="topbar">
         <div>
           <p class="eyebrow">Coupe du Monde 2026</p>
-          <h1 id="pageTitle">GamePulse 2.0</h1>
+          <h1 id="pageTitle">Dashboard live</h1>
         </div>
         <div class="top-actions">
+          <span id="syncStatus" class="pill">Synchronisation…</span>
           <span id="lastUpdate" class="pill">Mise à jour —</span>
-          <button id="installBtn" class="primary-btn hidden">Installer l’app</button>
+          <button id="installBtn" class="primary-btn hidden">Installer</button>
         </div>
       </header>
 
       <section id="home" class="view active-view">
-        <div class="hero-card">
-          <div>
+        <div class="dashboard-hero">
+          <article class="hero-card">
             <span class="live-dot"></span>
-            <p class="eyebrow">Coupe du Monde 2026</p>
-            <h2 id="currentStage">16e de finale</h2>
-            <p class="muted">Version 2.0 : tentative de mise à jour depuis une API internet toutes les 45 secondes, avec secours local si la source est indisponible.</p>
-          </div>
-          <div class="hero-score">
-            <strong id="aiFavorite">France</strong>
-            <span>Favori IA actuel</span>
-          </div>
+            <p class="eyebrow">GamePulse 2.0.2</p>
+            <h2>Données internet + secours local</h2>
+            <p class="muted">Refresh automatique toutes les 45 secondes. ESPN est gratuit et sans clé, mais non officiel FIFA.</p>
+          </article>
+          <article class="metric-card"><span>Matchs aujourd’hui</span><strong id="todayMatches">0</strong></article>
+          <article class="metric-card"><span>Buts visibles</span><strong id="totalGoals">0</strong></article>
+          <article class="metric-card"><span>Matchs terminés</span><strong id="finishedCount">0</strong></article>
         </div>
-
-        <div class="progress-card">
-          <div class="section-head compact-head">
-            <h3>Progression du tournoi</h3>
-            <span id="progressPercent" class="pill">42%</span>
-          </div>
-          <div id="stageProgress" class="stage-progress"></div>
-        </div>
-
-        <div class="dashboard-grid">
-          <div class="metric-card"><span>Matchs aujourd’hui</span><strong id="todayMatches">0</strong></div>
-          <div class="metric-card"><span>Buts aujourd’hui</span><strong id="todayGoals">0</strong></div>
-          <div class="metric-card"><span>Cartons jaunes</span><strong id="yellowCards">0</strong></div>
-          <div class="metric-card"><span>Cartons rouges</span><strong id="redCards">0</strong></div>
-        </div>
-
-        <div class="home-clean-grid">
-          <div class="panel">
+        <div class="home-grid">
+          <section class="panel large-panel">
+            <div class="section-head"><h3>Vue d’ensemble verticale</h3><button class="link-btn" data-view="bracket">Ouvrir le tableau</button></div>
+            <div id="miniTournament" class="vertical-tournament mini"></div>
+          </section>
+          <section class="panel">
             <div class="section-head"><h3>Matchs à suivre</h3><button class="link-btn" data-view="matches">Voir tout</button></div>
-            <div id="featuredMatches" class="match-list compact-list"></div>
-          </div>
-          <div class="panel">
-            <div class="section-head"><h3>Derniers résultats</h3><button class="link-btn" data-view="results">Tous les résultats</button></div>
-            <div id="homeResultsList" class="match-list compact-list"></div>
-          </div>
+            <div id="featuredMatches" class="match-list compact"></div>
+          </section>
+          <section class="panel">
+            <div class="section-head"><h3>Top buteurs</h3><button class="link-btn" data-view="scorers">Top 20</button></div>
+            <ol id="homeScorers" class="ranking compact-ranking"></ol>
+          </section>
         </div>
       </section>
 
@@ -103,71 +91,50 @@
       </section>
 
       <section id="bracket" class="view">
-        <div class="section-head"><h3>Tableau final</h3><span class="pill">Dynamique 2.0</span></div>
-        <div id="bracketGrid" class="bracket-grid"></div>
+        <div class="section-head">
+          <h3>Tableau vertical interactif</h3>
+          <div class="legend"><span><i class="green"></i> En lice</span><span><i class="red"></i> Éliminé</span><span><i class="gray"></i> À venir</span></div>
+        </div>
+        <div id="verticalTournament" class="vertical-tournament"></div>
       </section>
 
       <section id="scorers" class="view">
-        <div class="panel scorer-panel">
+        <div class="panel">
           <div class="section-head">
             <h3>Classement des buteurs</h3>
-            <select id="scorersLimit" class="select compact-select">
-              <option value="5">Top 5</option>
-              <option value="10">Top 10</option>
-              <option value="20" selected>Top 20</option>
+            <select id="scorersLimit" class="select">
+              <option value="5">Top 5</option><option value="10">Top 10</option><option value="20" selected>Top 20</option>
             </select>
           </div>
-          <ol id="scorersList" class="ranking scorers-ranking"></ol>
-          <p class="source-note">Buteurs : affichage internet si disponible, sinon secours local Footmercato au 30 juin.</p>
-        </div>
-      </section>
-
-      <section id="stats" class="view">
-        <div class="stats-layout">
-          <div class="panel"><h3>Cartons jaunes</h3><ol id="yellowList" class="ranking"></ol></div>
-          <div class="panel"><h3>Cartons rouges</h3><ol id="redList" class="ranking"></ol></div>
+          <ol id="scorersList" class="ranking"></ol>
+          <p class="source-note">Si l’API ne fournit pas les buteurs, GamePulse utilise le secours local Footmercato au 30 juin.</p>
         </div>
       </section>
 
       <section id="teams" class="view">
         <div class="section-head">
           <h3>Équipes</h3>
-          <select id="teamStatusSelect" class="select">
-            <option value="qualified">Qualifiées</option>
-            <option value="eliminated">Éliminées</option>
-            <option value="all">Toutes</option>
-          </select>
+          <select id="teamStatusSelect" class="select"><option value="all">Toutes</option><option value="qualified">En lice</option><option value="eliminated">Éliminées</option></select>
         </div>
         <div id="teamsGrid" class="teams-grid"></div>
       </section>
 
       <section id="assistant" class="view">
         <div class="assistant-card">
-          <div class="assistant-header"><span>🤖</span><div><h3>Assistant GamePulse IA</h3><p>Pose une question sur la Coupe du Monde.</p></div></div>
+          <div class="assistant-header"><span>🤖</span><div><h3>Assistant GamePulse IA</h3><p>Analyse basée sur les données affichées dans l’app.</p></div></div>
           <div class="quick-questions">
-            <button data-question="Qui est favori pour gagner la Coupe du Monde ?">Favori Coupe du Monde</button>
-            <button data-question="Quels matchs sont les plus serrés ?">Matchs serrés</button>
+            <button data-question="Quels matchs sont terminés ?">Résultats</button>
             <button data-question="Qui sont les meilleurs buteurs ?">Top buteurs</button>
-            <button data-question="Explique la progression du tournoi">Progression</button>
+            <button data-question="Explique le tableau vertical">Tableau</button>
+            <button data-question="La source est-elle officielle ?">Source</button>
           </div>
-          <div class="chat-box" id="chatBox"></div>
-          <form id="assistantForm" class="assistant-form">
-            <input id="assistantInput" placeholder="Ex : Qui va gagner France - Suède ?" autocomplete="off" />
-            <button class="primary-btn" type="submit">Envoyer</button>
-          </form>
+          <div id="chatBox" class="chat-box"></div>
+          <form id="assistantForm" class="assistant-form"><input id="assistantInput" placeholder="Pose ta question…" autocomplete="off" /><button class="primary-btn" type="submit">Envoyer</button></form>
         </div>
       </section>
     </main>
-
-    <nav class="bottom-nav" aria-label="Navigation mobile">
-      <button class="mobile-nav active" data-view="home">🏠<span>Accueil</span></button>
-      <button class="mobile-nav" data-view="matches">⚽<span>Matchs</span></button>
-      <button class="mobile-nav" data-view="results">✅<span>Résultats</span></button>
-      <button class="mobile-nav" data-view="scorers">🥇<span>Buteurs</span></button>
-      <button class="mobile-nav" data-view="assistant">🤖<span>IA</span></button>
-    </nav>
   </div>
 
-  <script src="assets/js/app.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>

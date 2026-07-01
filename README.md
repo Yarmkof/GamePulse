@@ -1,21 +1,27 @@
-# GamePulse 2.0
+# GamePulse 2.0.2 — Fondation live propre
 
-Application PWA Coupe du Monde avec mise à jour internet toutes les 45 secondes.
+Version refondue en modules pour éviter une application monolithique.
 
-## Nouveautés 2.0
-- Connexion à une API football gratuite sans clé : `https://worldcup26.ir/get/games`, `/get/teams`.
-- Rafraîchissement automatique toutes les 45 secondes.
-- Bouton Actualiser connecté à une vraie tentative de récupération internet.
-- Mode secours local si l’API est indisponible ou bloquée par le navigateur.
-- Cache PWA corrigé pour ne pas mettre en cache les appels API.
+## Inclus
+- Architecture propre `assets/js` en modules.
+- API ESPN public scoreboard sans clé.
+- Refresh automatique toutes les 45 secondes.
+- Mode secours local si l’API ne répond pas.
+- Tableau vertical qui commence par la phase de groupes.
+- Vue réduite de 20 % sur l’accueil pour avoir une meilleure vue d’ensemble.
+- Menu : Accueil, Matchs, Résultats, Tableau, Buteurs, Équipes, Assistant IA.
+- Top 20 buteurs en menu déroulant.
+- Cache PWA versionné en `gamepulse-2-0-2-cache`.
 
 ## Important
-La source gratuite intégrée est open source / publique, mais elle n’est pas une source officielle FIFA. Pour une donnée officiellement licenciée FIFA/Sportradar/Opta, il faut généralement une API payante ou un accord de données.
+ESPN est gratuit et sans clé, mais ce n’est pas une API officielle FIFA. Pour des données officiellement licenciées, il faudra passer par un fournisseur payant ou un accès FIFA/licencié.
 
+## Publication
+Summary GitHub recommandé :
 
-## V2.0.1 - API live réelle
-- Source internet gratuite sans clé : ESPN public scoreboard (`site.api.espn.com`).
-- Rafraîchissement automatique toutes les 45 secondes.
-- Bouton Actualiser = nouvel appel réseau réel (`fetch`, `cache: no-store`).
-- Secours local automatique si l'API est indisponible ou modifie son format.
-- Les données ESPN sont publiques et gratuites, mais non officielles FIFA et non garanties contractuellement.
+```text
+GamePulse 2.0.2 - Fondation live modulaire
+```
+
+Lien web après Push origin :
+https://yarmkof.github.io/GamePulse/
